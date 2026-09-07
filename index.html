@@ -1400,8 +1400,8 @@ textarea.form-input { min-height: 100px; resize: vertical; }
         <div>
           <!-- Channels -->
           <div class="settings-tab" id="settings-channels">
-            <!-- Facebook App ID Setup -->
-            <div class="card" id="fb-appid-setup">
+            <!-- Facebook App ID Setup (hidden by default, show via "Doi App ID") -->
+            <div class="card" id="fb-appid-setup" style="display:none;">
               <div class="card-header">
                 <div class="card-title">&#x1F527; Cau hinh Facebook App</div>
               </div>
@@ -2008,6 +2008,12 @@ function saveFBAppId() {
     return;
   }
   localStorage.setItem('hungbot_fb_app_id', appId);
+  // Save to server config too
+  fetch('/api/config', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ fbAppId: appId })
+  }).catch(function() {});
   document.getElementById('fb-appid-setup').style.display = 'none';
   document.getElementById('fb-connect-section').style.display = 'block';
 }
@@ -2026,25 +2032,38 @@ function initFBUI() {
     if (connectedPages.length > 0) renderConnectedPages();
   }
 
-  if (fbAccessToken) {
-    document.getElementById('fb-appid-setup').style.display = 'none';
-    document.getElementById('fb-connect-section').style.display = 'block';
-    onFBConnected();
-  } else if (appId) {
-    document.getElementById('fb-appid-setup').style.display = 'none';
-    document.getElementById('fb-connect-section').style.display = 'block';
-  } else {
-    // Auto-load connected pages from server config
-    fetch('/api/config').then(function(r) { return r.json(); }).then(function(cfg) {
-      if (cfg.fbAppId) {
-        localStorage.setItem('hungbot_fb_app_id', cfg.fbAppId);
-        document.getElementById('fb-app-id-input').value = cfg.fbAppId;
-      }
-      if (cfg.pageNames && Object.keys(cfg.pageNames).length > 0) {
-        showConnectedPagesFromConfig(cfg.pageNames);
-      }
-    }).catch(function() {});
-  }
+  // Always fetch server config to show connected pages
+  fetch('/api/config').then(function(r) { return r.json(); }).then(function(cfg) {
+    if (cfg.fbAppId) {
+      localStorage.setItem('hungbot_fb_app_id', cfg.fbAppId);
+      document.getElementById('fb-app-id-input').value = cfg.fbAppId;
+    }
+    var hasPages = cfg.pageNames && Object.keys(cfg.pageNames).length > 0;
+
+    if (fbAccessToken) {
+      document.getElementById('fb-appid-setup').style.display = 'none';
+      document.getElementById('fb-connect-section').style.display = 'block';
+      onFBConnected();
+      if (hasPages) showConnectedPagesFromConfig(cfg.pageNames);
+    } else if (hasPages) {
+      showConnectedPagesFromConfig(cfg.pageNames);
+    } else if (appId || cfg.fbAppId) {
+      document.getElementById('fb-appid-setup').style.display = 'none';
+      document.getElementById('fb-connect-section').style.display = 'block';
+    } else {
+      document.getElementById('fb-appid-setup').style.display = 'block';
+    }
+  }).catch(function() {
+    // Offline fallback
+    if (fbAccessToken) {
+      document.getElementById('fb-appid-setup').style.display = 'none';
+      document.getElementById('fb-connect-section').style.display = 'block';
+      onFBConnected();
+    } else if (appId) {
+      document.getElementById('fb-appid-setup').style.display = 'none';
+      document.getElementById('fb-connect-section').style.display = 'block';
+    }
+  });
 }
 
 function showConnectedPagesFromConfig(pageNames) {
