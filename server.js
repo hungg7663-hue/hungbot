@@ -14,12 +14,13 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 var conversations = {};
 
 var FOLLOWUP_MESSAGES = [
-  "Koj puas tseem nyob? 😊 Yog koj xav paub ntxiv txog peb cov khoom, qhia rau peb nawb!",
-  "Nyob zoo dua! Peb tseem nyob ntawm no pab koj 🙌 Koj puas muaj lus nug txog peb cov khoom?",
-  "Peb pom tias koj tseem tsis tau teb 🤔 Yog koj xav tau kev pab, xa xov tuaj rau peb tau txhua lub sij hawm!",
-  "Koj puas xav saib peb cov khoom tshiab? 🆕 Peb muaj ntau yam zoo nqi heev hnub no!"
+  "Koj nyob, koj puas tseem xav yuav yam khoom no? ❤️",
+  "Koj puas xav xaj hnub no kom kuv npaj khoom rau koj? 😊",
+  "Koj tseem muaj yam twg tsis paub meej lossis tseem txhawj xeeb txog? Nug kuv tau nhé, kuv mam li pab qhia ntxiv rau koj ❤️",
+  "Koj xav yuav 1 lossis 2 yam khoom kom kuv sau npe xaj rau koj?",
+  "Kuv tos koj qhov kev lees paub kom kuv npaj xaj khoom rau koj nha 😍 Yog koj tseem xav yuav ces qhia kuv nhé!"
 ];
-var FOLLOWUP_DELAYS = [3*60*1000, 10*60*1000, 30*60*1000, 2*60*60*1000];
+var FOLLOWUP_DELAYS = [10*60*1000, 10*60*1000, 10*60*1000, 10*60*1000, 10*60*1000];
 
 function scheduleFollowUp(senderId) {
   var conv = conversations[senderId];

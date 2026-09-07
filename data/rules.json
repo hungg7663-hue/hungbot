@@ -1,17 +1,49 @@
 [
   {
-    "name": "Chao hoi",
+    "name": "Xac nhan muon mua",
     "keywords": [
-      "nyob zoo", "hello", "hi", "hey", "xin chao", "chao shop", "chao ban",
-      "koj puas nyob", "puas yog", "sawv ntxov zoo", "hmo ntuj zoo"
+      "muaj", "tseem xav yuav", "xav yuav", "yuav", "kuv yuav", "xaj", "order",
+      "mua", "dat hang", "muab rau kuv", "ok", "tau", "yog"
     ],
     "match": "contains",
-    "reply": "Nyob zoo! Ua tsaug koj xa xov tuaj rau HMONG4S 🙏\nKoj xav paub txog yam khoom twg? Qhia rau peb es peb pab tau koj!",
-    "replies": [
-      "Nyob zoo! Ua tsaug koj xa xov tuaj rau HMONG4S 🙏\nKoj xav paub txog yam khoom twg? Qhia rau peb es peb pab tau koj!",
-      "Nyob zoo os! Zoo siab koj tuaj saib peb lub khw 😊\nHnub no koj xav yuav dabtsi? Peb muaj ntau yam zoo heev!",
-      "Nyob zoo! Txais tos tuaj rau HMONG4S ✨\nKoj xav nug txog dabtsi? Peb pab tau koj tam sim no!"
+    "reply": "Yog mas ❤️ Koj xa koj tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj khoom rau koj tam sim no nhé!",
+    "active": true
+  },
+  {
+    "name": "Can suy nghi them",
+    "keywords": [
+      "xav ntxiv", "cia kuv xav", "saib ua ntej", "cia kuv saib", "tsis tau txiav txim",
+      "maj mam", "cia tag kis", "tsis paub", "xav tsis tau"
     ],
+    "match": "contains",
+    "reply": "Tau kawg ạ, koj maj mam saib thiab xav kom zoo ❤️ Thaum koj xav tau ces xa lus rau kuv, kuv yuav pab koj tam sim ntawd nha!",
+    "active": true
+  },
+  {
+    "name": "Tsis paub haum",
+    "keywords": [
+      "tsis paub", "puas haum", "tsis meej", "txhawj", "ntshai", "tsis ntseeg"
+    ],
+    "match": "contains",
+    "reply": "Yog mas, koj qhia koj qhov kev xav tau rau kuv, kuv mam li pab xaiv yam khoom uas haum rau koj nhé!",
+    "active": true
+  },
+  {
+    "name": "Yuav 1 yam",
+    "keywords": [
+      "yuav 1", "1 xwb", "ib yam", "ib xwb"
+    ],
+    "match": "contains",
+    "reply": "Tau kawg ❤️ Koj xa koj tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj 1 yam rau koj nhé!",
+    "active": true
+  },
+  {
+    "name": "Xa xov tooj / chaw nyob",
+    "keywords": [
+      "0\\d{9,10}"
+    ],
+    "match": "regex",
+    "reply": "Ua tsaug os ❤️ Kuv tau txais koj cov ntaub ntawv lawm. Kuv mam li npaj xaj khoom rau koj tam sim no! Tos kuv me ntsis nhé 😊",
     "active": true
   },
   {
@@ -21,10 +53,10 @@
       "kim tsawg", "pheej hmoo", "raug nqi"
     ],
     "match": "contains",
-    "reply": "Koj xav paub tus nqi ntawm yam khoom twg? 🏷️\nXa duab lossis lub npe khoom tuaj es peb mam qhia tus nqi rau koj!",
+    "reply": "Koj xav paub tus nqi ntawm lub Khoom twg os? Xa lub npe Khoom lossis duab tuaj es peb mam qhia tus nqi rau koj!",
     "replies": [
-      "Koj xav paub tus nqi ntawm yam khoom twg? 🏷️\nXa duab lossis lub npe khoom tuaj es peb mam qhia tus nqi rau koj!",
-      "Peb muaj ntau yam nqi zoo heev! 💰\nQhia rau peb koj nyiam yam twg, peb mam xa tus nqi rau koj."
+      "Koj xav paub tus nqi ntawm lub Khoom twg os? Xa lub npe Khoom lossis duab tuaj es peb mam qhia tus nqi rau koj!",
+      "Peb cov Khoom nqi zoo heev os! 💰 Qhia rau peb koj xav paub lub twg, peb mam xa tus nqi rau koj."
     ],
     "active": true
   },
@@ -35,7 +67,7 @@
       "qhov twg", "tuaj li cas"
     ],
     "match": "contains",
-    "reply": "Chaw nyob: HMONG4S GROUP 📍\nHu xov tooj: 0xxx.xxx.xxx\nQhib txhua hnub: 8h - 21h\n\nTxais tos koj tuaj saib!",
+    "reply": "Chaw nyob: HMONG4S GROUP 📍\nHu xov tooj: 0xxx.xxx.xxx\nQhib txhua hnub: 8h - 21h\n\nTxais tos koj tuaj saib os!",
     "active": true
   },
   {
@@ -44,10 +76,10 @@
       "ua tsaug", "cam on", "thank", "thanks", "zoo kawg", "zoo heev"
     ],
     "match": "contains",
-    "reply": "Tsis ua li cas os! 😊 Yog koj xav tau dabtsi ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
+    "reply": "Tsis ua li cas os! 😊 Yog koj xav tau Khoom ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
     "replies": [
-      "Tsis ua li cas os! 😊 Yog koj xav tau dabtsi ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
-      "Zoo siab pab tau koj! 🙏 Yog muaj lus nug ntxiv ces hu tuaj rau peb tau txhua lub sij hawm."
+      "Tsis ua li cas os! 😊 Yog koj xav tau Khoom ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
+      "Zoo siab pab tau koj os! 🙏 Yog muaj lus nug ntxiv txog Khoom ces hu tuaj rau peb tau txhua lub sij hawm."
     ],
     "active": true
   },
@@ -58,16 +90,14 @@
       "xa mus", "pab xa", "pes ntev"
     ],
     "match": "contains",
-    "reply": "Peb pab xa khoom DAWB thoob teb chaws rau cov order txij 500k! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.",
+    "reply": "Peb pab xa Khoom DAWB thoob teb chaws rau cov order txij 500k os! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.",
     "active": true
   },
   {
-    "name": "Xav yuav",
-    "keywords": [
-      "xav yuav", "order", "xaj", "yuav", "mua", "dat hang", "muab rau kuv"
-    ],
-    "match": "contains",
-    "reply": "Zoo kawg! Koj xav yuav yam twg? 🛒\nXa duab lossis lub npe khoom tuaj, peb mam pab koj xaj tam sim no!",
+    "name": "Catch all",
+    "keywords": [".*"],
+    "match": "regex",
+    "reply": "Nyob zoo os, Koj xav tau peb lub Khoom twg os? Peb pab tau koj tam sim no!",
     "active": true
   }
 ]
