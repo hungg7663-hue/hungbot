@@ -5,7 +5,7 @@ const path = require('path');
 const PORT = process.env.PORT || 3700;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'hungbot_verify_2024';
 const DATA_DIR = path.join(__dirname, 'data');
-const MIME = { '.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml' };
+const MIME = { '.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webmanifest':'application/manifest+json' };
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 

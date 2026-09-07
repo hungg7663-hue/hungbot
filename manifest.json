@@ -1,0 +1,15 @@
+{
+  "name": "HungBot - HMONG4S",
+  "short_name": "HungBot",
+  "description": "Chatbot ban hang tu dong - HMONG4S GROUP",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1E1E2E",
+  "theme_color": "#6C5CE7",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml" },
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}
