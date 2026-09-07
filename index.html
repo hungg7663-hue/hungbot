@@ -1,0 +1,2457 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HungBot — AI Chatbot Marketing Platform</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// Facebook OAuth — no SDK needed, works on HTTP localhost
+</script>
+<style>
+:root {
+  --primary: #6C5CE7;
+  --primary-light: #A29BFE;
+  --primary-dark: #5A4BD1;
+  --accent: #00CEC9;
+  --accent-light: #81ECEC;
+  --success: #00B894;
+  --warning: #FDCB6E;
+  --danger: #E17055;
+  --bg: #F8F9FE;
+  --bg-card: #FFFFFF;
+  --bg-sidebar: #1E1E2E;
+  --bg-sidebar-hover: #2D2D44;
+  --bg-sidebar-active: #6C5CE7;
+  --text: #2D3436;
+  --text-secondary: #636E72;
+  --text-sidebar: #B2B2C8;
+  --text-sidebar-active: #FFFFFF;
+  --border: #E8E8F0;
+  --shadow: 0 2px 12px rgba(108,92,231,0.08);
+  --shadow-lg: 0 8px 32px rgba(108,92,231,0.12);
+  --radius: 12px;
+  --radius-sm: 8px;
+  --transition: 0.2s ease;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+/* SIDEBAR */
+.sidebar {
+  width: 260px; min-width: 260px; background: var(--bg-sidebar);
+  display: flex; flex-direction: column; z-index: 100;
+}
+.sidebar-logo {
+  padding: 20px 24px; display: flex; align-items: center; gap: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.sidebar-logo .logo-icon {
+  width: 36px; height: 36px; background: var(--primary); border-radius: 10px;
+  display: flex; align-items: center; justify-content: center; font-size: 18px;
+}
+.sidebar-logo h1 { color: #fff; font-size: 18px; font-weight: 700; }
+.sidebar-logo span { color: var(--primary-light); font-size: 11px; font-weight: 500; }
+
+.sidebar-nav { flex:1; padding: 12px; overflow-y: auto; }
+.nav-section { margin-bottom: 8px; }
+.nav-section-title {
+  color: var(--text-sidebar); font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 1.2px; padding: 8px 12px 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 12px; padding: 10px 12px;
+  border-radius: var(--radius-sm); color: var(--text-sidebar); cursor: pointer;
+  transition: var(--transition); font-size: 14px; font-weight: 500;
+  position: relative;
+}
+.nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
+.nav-item.active { background: var(--bg-sidebar-active); color: var(--text-sidebar-active); }
+.nav-item .icon { width: 20px; text-align: center; font-size: 16px; }
+.nav-item .badge {
+  position: absolute; right: 12px; background: var(--danger);
+  color: #fff; font-size: 10px; padding: 2px 7px; border-radius: 10px; font-weight: 600;
+}
+.sidebar-footer {
+  padding: 16px; border-top: 1px solid rgba(255,255,255,0.06);
+  display: flex; align-items: center; gap: 10px;
+}
+.sidebar-footer .avatar {
+  width: 36px; height: 36px; background: var(--primary); border-radius: 50%;
+  display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 600; font-size: 14px;
+}
+.sidebar-footer .user-info { flex:1; }
+.sidebar-footer .user-name { color: #fff; font-size: 13px; font-weight: 600; }
+.sidebar-footer .user-plan { color: var(--text-sidebar); font-size: 11px; }
+
+/* MAIN */
+.main { flex:1; display: flex; flex-direction: column; overflow: hidden; }
+.topbar {
+  height: 60px; background: var(--bg-card); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; padding: 0 24px;
+}
+.topbar-left { display: flex; align-items: center; gap: 16px; }
+.topbar-left h2 { font-size: 18px; font-weight: 700; }
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+.topbar-btn {
+  width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border);
+  background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  font-size: 16px; transition: var(--transition); position: relative;
+}
+.topbar-btn:hover { background: var(--bg); border-color: var(--primary); }
+.topbar-btn .notif-dot {
+  position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
+  background: var(--danger); border-radius: 50%; border: 2px solid #fff;
+}
+.search-box {
+  display: flex; align-items: center; gap: 8px; background: var(--bg);
+  border-radius: 20px; padding: 8px 16px; border: 1px solid var(--border);
+}
+.search-box input {
+  border: none; background: none; outline: none; font-size: 13px; width: 200px; color: var(--text);
+}
+
+.content { flex:1; overflow-y: auto; padding: 24px; }
+.page { display: none; }
+.page.active { display: block; }
+
+/* CARDS */
+.stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.stat-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow);
+  border: 1px solid var(--border); transition: var(--transition);
+}
+.stat-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-2px); }
+.stat-card .stat-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.stat-card .stat-icon {
+  width: 40px; height: 40px; border-radius: 10px; display: flex;
+  align-items: center; justify-content: center; font-size: 18px;
+}
+.stat-card .stat-change { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+.stat-card .stat-change.up { color: var(--success); background: rgba(0,184,148,0.1); }
+.stat-card .stat-change.down { color: var(--danger); background: rgba(225,112,85,0.1); }
+.stat-card .stat-value { font-size: 28px; font-weight: 800; margin-bottom: 4px; }
+.stat-card .stat-label { font-size: 13px; color: var(--text-secondary); }
+
+.card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 16px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px;
+}
+.card-title { font-size: 16px; font-weight: 700; }
+.card-subtitle { font-size: 12px; color: var(--text-secondary); }
+
+.grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+
+/* BUTTONS */
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px;
+  border-radius: var(--radius-sm); font-size: 13px; font-weight: 600;
+  cursor: pointer; border: none; transition: var(--transition);
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: var(--bg); color: var(--text); border: 1px solid var(--border); }
+.btn-secondary:hover { border-color: var(--primary); color: var(--primary); }
+.btn-success { background: var(--success); color: #fff; }
+.btn-danger { background: var(--danger); color: #fff; }
+.btn-sm { padding: 6px 14px; font-size: 12px; }
+.btn-icon { width: 34px; height: 34px; padding: 0; justify-content: center; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; padding: 12px 16px; font-size: 12px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid var(--border); }
+td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid var(--border); }
+tr:hover td { background: var(--bg); }
+
+/* TAGS */
+.tag {
+  display: inline-flex; align-items: center; padding: 3px 10px;
+  border-radius: 20px; font-size: 11px; font-weight: 600;
+}
+.tag-success { background: rgba(0,184,148,0.1); color: var(--success); }
+.tag-warning { background: rgba(253,203,110,0.15); color: #E17055; }
+.tag-danger { background: rgba(225,112,85,0.1); color: var(--danger); }
+.tag-primary { background: rgba(108,92,231,0.1); color: var(--primary); }
+.tag-info { background: rgba(0,206,201,0.1); color: var(--accent); }
+
+/* LIVE CHAT */
+.chat-layout { display: flex; height: calc(100vh - 84px); margin: -24px; }
+.chat-list {
+  width: 340px; min-width: 340px; border-right: 1px solid var(--border);
+  background: var(--bg-card); display: flex; flex-direction: column;
+}
+.chat-list-header { padding: 16px; border-bottom: 1px solid var(--border); }
+.chat-list-search {
+  display: flex; align-items: center; gap: 8px; background: var(--bg);
+  border-radius: var(--radius-sm); padding: 8px 12px; margin-top: 12px;
+}
+.chat-list-search input { border: none; background: none; outline: none; font-size: 13px; flex:1; }
+.chat-list-tabs { display: flex; border-bottom: 1px solid var(--border); }
+.chat-tab {
+  flex: 1; padding: 10px; text-align: center; font-size: 12px; font-weight: 600;
+  color: var(--text-secondary); cursor: pointer; border-bottom: 2px solid transparent;
+  transition: var(--transition);
+}
+.chat-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+.chat-items { flex:1; overflow-y: auto; }
+.chat-item {
+  display: flex; gap: 12px; padding: 14px 16px; cursor: pointer;
+  border-bottom: 1px solid var(--border); transition: var(--transition);
+}
+.chat-item:hover { background: var(--bg); }
+.chat-item.active { background: rgba(108,92,231,0.06); border-left: 3px solid var(--primary); }
+.chat-item .avatar {
+  width: 44px; height: 44px; border-radius: 50%; background: var(--primary-light);
+  display: flex; align-items: center; justify-content: center; font-weight: 700;
+  color: var(--primary-dark); font-size: 16px; flex-shrink: 0;
+}
+.chat-item .chat-info { flex:1; min-width: 0; }
+.chat-item .chat-name { font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+.chat-item .chat-preview { font-size: 12px; color: var(--text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chat-item .chat-meta { text-align: right; flex-shrink: 0; }
+.chat-item .chat-time { font-size: 11px; color: var(--text-secondary); }
+.chat-item .chat-unread {
+  background: var(--primary); color: #fff; font-size: 10px; width: 20px; height: 20px;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  margin-top: 4px; margin-left: auto; font-weight: 700;
+}
+
+.chat-main { flex:1; display: flex; flex-direction: column; background: #F0F0F8; }
+.chat-main-header {
+  padding: 14px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+}
+.chat-main-header .user-row { display: flex; align-items: center; gap: 12px; }
+.chat-main-header .status-dot { width: 10px; height: 10px; background: var(--success); border-radius: 50%; }
+.chat-messages { flex:1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 12px; }
+.msg {
+  max-width: 70%; padding: 12px 16px; border-radius: 16px; font-size: 14px; line-height: 1.5;
+}
+.msg.incoming { background: var(--bg-card); align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.msg.outgoing { background: var(--primary); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg.bot { background: linear-gradient(135deg, var(--primary), var(--accent)); color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg .msg-time { font-size: 10px; opacity: 0.6; margin-top: 4px; }
+.msg .bot-tag { font-size: 9px; background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px; margin-bottom: 4px; display: inline-block; }
+
+.chat-input-area {
+  padding: 16px 20px; background: var(--bg-card); border-top: 1px solid var(--border);
+  display: flex; gap: 12px; align-items: flex-end;
+}
+.chat-input-area textarea {
+  flex:1; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  padding: 10px 14px; font-size: 14px; resize: none; height: 42px;
+  font-family: inherit; outline: none;
+}
+.chat-input-area textarea:focus { border-color: var(--primary); }
+.chat-input-area .send-btn {
+  width: 42px; height: 42px; background: var(--primary); border: none; border-radius: 50%;
+  color: #fff; font-size: 18px; cursor: pointer; display: flex; align-items: center;
+  justify-content: center; transition: var(--transition);
+}
+.chat-input-area .send-btn:hover { background: var(--primary-dark); transform: scale(1.05); }
+
+.chat-sidebar {
+  width: 280px; min-width: 280px; border-left: 1px solid var(--border);
+  background: var(--bg-card); overflow-y: auto; padding: 20px;
+}
+.chat-sidebar .profile-section { text-align: center; margin-bottom: 20px; }
+.chat-sidebar .profile-avatar {
+  width: 64px; height: 64px; border-radius: 50%; background: var(--primary-light);
+  margin: 0 auto 10px; display: flex; align-items: center; justify-content: center;
+  font-size: 24px; font-weight: 700; color: var(--primary-dark);
+}
+.chat-sidebar .profile-name { font-weight: 700; font-size: 16px; }
+.chat-sidebar .profile-channel { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
+.info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.info-row .label { font-size: 12px; color: var(--text-secondary); }
+.info-row .value { font-size: 12px; font-weight: 600; }
+
+/* FLOW BUILDER */
+.flow-toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 12px 20px; background: var(--bg-card); border-bottom: 1px solid var(--border);
+  margin: -24px -24px 16px;
+}
+.flow-canvas {
+  background: var(--bg-card); border-radius: var(--radius); min-height: 500px;
+  border: 2px dashed var(--border); position: relative; overflow: hidden;
+  background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+.flow-node {
+  position: absolute; background: var(--bg-card); border: 2px solid var(--border);
+  border-radius: var(--radius); padding: 16px; min-width: 200px; box-shadow: var(--shadow);
+  cursor: move; user-select: none;
+}
+.flow-node.trigger { border-color: var(--success); }
+.flow-node.trigger .node-header { color: var(--success); }
+.flow-node.action { border-color: var(--primary); }
+.flow-node.action .node-header { color: var(--primary); }
+.flow-node.condition { border-color: var(--warning); }
+.flow-node.condition .node-header { color: #E17055; }
+.flow-node.ai { border-color: var(--accent); }
+.flow-node.ai .node-header { color: var(--accent); }
+.node-header { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.node-title { font-size: 14px; font-weight: 600; }
+.node-desc { font-size: 12px; color: var(--text-secondary); margin-top: 4px; }
+.node-connector {
+  width: 12px; height: 12px; background: var(--primary); border: 2px solid #fff;
+  border-radius: 50%; position: absolute; bottom: -6px; left: 50%; transform: translateX(-50%);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.2);
+}
+.flow-line {
+  position: absolute; pointer-events: none;
+}
+
+/* BROADCAST */
+.broadcast-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+.broadcast-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  border: 1px solid var(--border); box-shadow: var(--shadow); transition: var(--transition);
+}
+.broadcast-card:hover { box-shadow: var(--shadow-lg); }
+.broadcast-card .bc-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.broadcast-card .bc-title { font-weight: 700; font-size: 15px; }
+.broadcast-card .bc-stats { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; margin-top: 12px; }
+.broadcast-card .bc-stat { text-align: center; }
+.broadcast-card .bc-stat-val { font-weight: 800; font-size: 16px; }
+.broadcast-card .bc-stat-label { font-size: 10px; color: var(--text-secondary); text-transform: uppercase; }
+
+/* CONTACTS */
+.contacts-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.filter-row { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.filter-chip {
+  padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600;
+  border: 1px solid var(--border); background: var(--bg-card); cursor: pointer;
+  transition: var(--transition);
+}
+.filter-chip:hover, .filter-chip.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* AI AGENT */
+.agent-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.agent-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+.agent-card h3 { font-size: 16px; margin-bottom: 4px; }
+.agent-card p { font-size: 13px; color: var(--text-secondary); margin-bottom: 16px; }
+.form-group { margin-bottom: 16px; }
+.form-label { font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; text-transform: uppercase; letter-spacing: 0.5px; }
+.form-input {
+  width: 100%; padding: 10px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm);
+  font-size: 14px; outline: none; transition: var(--transition); font-family: inherit;
+}
+.form-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(108,92,231,0.1); }
+textarea.form-input { min-height: 100px; resize: vertical; }
+.toggle-row {
+  display: flex; align-items: center; justify-content: space-between; padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+.toggle-row .toggle-info { flex:1; }
+.toggle-row .toggle-title { font-size: 14px; font-weight: 600; }
+.toggle-row .toggle-desc { font-size: 12px; color: var(--text-secondary); }
+.toggle {
+  width: 44px; height: 24px; background: var(--border); border-radius: 12px;
+  cursor: pointer; position: relative; transition: var(--transition);
+}
+.toggle.active { background: var(--primary); }
+.toggle::after {
+  content: ''; position: absolute; width: 20px; height: 20px; background: #fff;
+  border-radius: 50%; top: 2px; left: 2px; transition: var(--transition);
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
+.toggle.active::after { left: 22px; }
+
+/* ANALYTICS */
+.analytics-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+
+/* SETTINGS */
+.settings-layout { display: grid; grid-template-columns: 220px 1fr; gap: 24px; }
+.settings-nav { }
+.settings-nav-item {
+  padding: 10px 16px; border-radius: var(--radius-sm); cursor: pointer;
+  font-size: 14px; font-weight: 500; color: var(--text-secondary);
+  transition: var(--transition); margin-bottom: 2px;
+}
+.settings-nav-item:hover { background: var(--bg); color: var(--text); }
+.settings-nav-item.active { background: rgba(108,92,231,0.1); color: var(--primary); font-weight: 600; }
+.channel-card {
+  display: flex; align-items: center; gap: 16px; padding: 16px;
+  border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 12px;
+  transition: var(--transition);
+}
+.channel-card:hover { border-color: var(--primary); box-shadow: var(--shadow); }
+.channel-card .ch-icon {
+  width: 48px; height: 48px; border-radius: 12px; display: flex;
+  align-items: center; justify-content: center; font-size: 24px;
+}
+.channel-card .ch-info { flex:1; }
+.channel-card .ch-name { font-weight: 700; font-size: 15px; }
+.channel-card .ch-desc { font-size: 12px; color: var(--text-secondary); }
+
+/* MODAL */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 1000;
+  display: none; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { display: flex; }
+.modal {
+  background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+  width: 90%; max-width: 560px; max-height: 85vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal h3 { font-size: 18px; margin-bottom: 16px; }
+
+/* EMPTY STATE */
+.empty-state {
+  text-align: center; padding: 60px 20px; color: var(--text-secondary);
+}
+.empty-state .empty-icon { font-size: 48px; margin-bottom: 16px; }
+.empty-state h3 { font-size: 18px; color: var(--text); margin-bottom: 8px; }
+.empty-state p { font-size: 14px; max-width: 400px; margin: 0 auto 16px; }
+
+/* FB CONNECT */
+.fb-connect-banner {
+  background: linear-gradient(135deg, #1877F2, #42A5F5);
+  border-radius: var(--radius); padding: 20px 24px; margin-bottom: 16px;
+  display: flex; align-items: center; gap: 16px; color: #fff;
+}
+.fb-connect-banner .fb-logo { font-size: 36px; }
+.fb-connect-banner .fb-text { flex: 1; }
+.fb-connect-banner .fb-text h3 { font-size: 16px; margin-bottom: 4px; }
+.fb-connect-banner .fb-text p { font-size: 13px; opacity: 0.9; }
+.btn-fb {
+  background: #fff; color: #1877F2; border: none; padding: 10px 24px;
+  border-radius: var(--radius-sm); font-weight: 700; font-size: 14px;
+  cursor: pointer; transition: var(--transition); display: inline-flex;
+  align-items: center; gap: 8px;
+}
+.btn-fb:hover { background: #E8F0FE; transform: translateY(-1px); }
+
+.page-card {
+  background: var(--bg-card); border: 2px solid var(--border); border-radius: var(--radius);
+  padding: 16px; display: flex; align-items: center; gap: 14px; margin-bottom: 10px;
+  transition: var(--transition); cursor: pointer;
+}
+.page-card:hover { border-color: #1877F2; box-shadow: 0 2px 12px rgba(24,119,242,0.12); }
+.page-card.selected { border-color: #1877F2; background: rgba(24,119,242,0.03); }
+.page-card .page-avatar {
+  width: 48px; height: 48px; border-radius: 12px; object-fit: cover; background: #eee;
+}
+.page-card .page-info { flex: 1; }
+.page-card .page-name { font-weight: 700; font-size: 15px; }
+.page-card .page-cat { font-size: 12px; color: var(--text-secondary); }
+.page-card .page-fans { font-size: 12px; color: var(--text-secondary); }
+.page-card .page-status { flex-shrink: 0; }
+
+.fb-user-info {
+  display: flex; align-items: center; gap: 12px; padding: 14px 16px;
+  background: var(--bg); border-radius: var(--radius); margin-bottom: 16px;
+}
+.fb-user-info img { width: 44px; height: 44px; border-radius: 50%; }
+.fb-user-info .fb-user-name { font-weight: 700; font-size: 15px; }
+.fb-user-info .fb-user-id { font-size: 11px; color: var(--text-secondary); }
+
+.connected-page-row {
+  display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+  border: 1px solid var(--border); border-radius: var(--radius); margin-bottom: 10px;
+  background: var(--bg-card);
+}
+.connected-page-row img { width: 44px; height: 44px; border-radius: 10px; }
+.connected-page-row .cp-info { flex: 1; }
+.connected-page-row .cp-name { font-weight: 700; font-size: 14px; }
+.connected-page-row .cp-detail { font-size: 12px; color: var(--text-secondary); }
+.connected-page-row .cp-actions { display: flex; gap: 6px; }
+
+.setup-step {
+  display: flex; align-items: flex-start; gap: 14px; padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+}
+.setup-step .step-num {
+  width: 28px; height: 28px; background: var(--primary); color: #fff;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 700; flex-shrink: 0;
+}
+.setup-step .step-content { flex: 1; }
+.setup-step .step-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
+.setup-step .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); }
+  .chat-sidebar { display: none; }
+}
+@media (max-width: 768px) {
+  .sidebar { display: none; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  .agent-grid { grid-template-columns: 1fr; }
+  .broadcast-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">H</div>
+    <div>
+      <h1>HungBot</h1>
+      <span>AI Marketing Platform</span>
+    </div>
+  </div>
+  <div class="sidebar-nav">
+    <div class="nav-section">
+      <div class="nav-section-title">Menu chinh</div>
+      <div class="nav-item active" onclick="showPage('dashboard')">
+        <span class="icon">&#x1F4CA;</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="showPage('livechat')">
+        <span class="icon">&#x1F4AC;</span> Live Chat
+        <span class="badge">5</span>
+      </div>
+      <div class="nav-item" onclick="showPage('flows')">
+        <span class="icon">&#x26A1;</span> Automation
+      </div>
+      <div class="nav-item" onclick="showPage('broadcasts')">
+        <span class="icon">&#x1F4E2;</span> Broadcasts
+      </div>
+      <div class="nav-item" onclick="showPage('contacts')">
+        <span class="icon">&#x1F465;</span> Contacts
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">AI & Tools</div>
+      <div class="nav-item" onclick="showPage('aiagent')">
+        <span class="icon">&#x1F916;</span> AI Agent
+      </div>
+      <div class="nav-item" onclick="showPage('analytics')">
+        <span class="icon">&#x1F4C8;</span> Analytics
+      </div>
+      <div class="nav-item" onclick="showPage('growth')">
+        <span class="icon">&#x1F680;</span> Growth Tools
+      </div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-section-title">He thong</div>
+      <div class="nav-item" onclick="showPage('settings')">
+        <span class="icon">&#x2699;</span> Settings
+      </div>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <div class="avatar">H</div>
+    <div class="user-info">
+      <div class="user-name">Hung Tran</div>
+      <div class="user-plan">Pro Plan</div>
+    </div>
+  </div>
+</nav>
+
+<!-- MAIN CONTENT -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h2 id="page-title">Dashboard</h2>
+    </div>
+    <div class="topbar-right">
+      <div class="search-box">
+        <span>&#x1F50D;</span>
+        <input type="text" placeholder="Tim kiem...">
+      </div>
+      <button class="topbar-btn">&#x1F514;<span class="notif-dot"></span></button>
+      <button class="topbar-btn">&#x2753;</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ========== DASHBOARD ========== -->
+    <div class="page active" id="page-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(108,92,231,0.1);color:var(--primary)">&#x1F4AC;</div>
+            <span class="stat-change up">+12.5%</span>
+          </div>
+          <div class="stat-value">8,547</div>
+          <div class="stat-label">Tong hoi thoai</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(0,184,148,0.1);color:var(--success)">&#x1F465;</div>
+            <span class="stat-change up">+8.2%</span>
+          </div>
+          <div class="stat-value">24,156</div>
+          <div class="stat-label">Subscribers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(0,206,201,0.1);color:var(--accent)">&#x1F916;</div>
+            <span class="stat-change up">+23.1%</span>
+          </div>
+          <div class="stat-value">94.7%</div>
+          <div class="stat-label">AI Reply Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(253,203,110,0.15);color:#E17055">&#x1F4B0;</div>
+            <span class="stat-change up">+15.8%</span>
+          </div>
+          <div class="stat-value">156.2M</div>
+          <div class="stat-label">Doanh thu tu chat</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Hoi thoai theo thoi gian</div>
+              <div class="card-subtitle">7 ngay gan nhat</div>
+            </div>
+            <div style="display:flex;gap:6px;">
+              <button class="btn btn-sm btn-secondary">7 ngay</button>
+              <button class="btn btn-sm btn-secondary">30 ngay</button>
+            </div>
+          </div>
+          <canvas id="chartConversations" height="200"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Kenh tin nhan</div>
+          </div>
+          <canvas id="chartChannels" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Hoi thoai gan day</div>
+          <button class="btn btn-sm btn-secondary">Xem tat ca</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Khach hang</th><th>Kenh</th><th>Tin nhan cuoi</th><th>Trang thai</th><th>Thoi gian</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Nguyen Van A</strong></td><td><span class="tag tag-primary">Messenger</span></td><td>Em muon mua san pham nay...</td><td><span class="tag tag-success">Active</span></td><td>2 phut truoc</td></tr>
+              <tr><td><strong>Tran Thi B</strong></td><td><span class="tag tag-success">WhatsApp</span></td><td>Cho em hoi gia ship...</td><td><span class="tag tag-success">Active</span></td><td>5 phut truoc</td></tr>
+              <tr><td><strong>Le Van C</strong></td><td><span class="tag tag-info">TikTok</span></td><td>San pham nay con hang khong?</td><td><span class="tag tag-warning">Pending</span></td><td>12 phut truoc</td></tr>
+              <tr><td><strong>Pham D</strong></td><td><span class="tag tag-primary">Messenger</span></td><td>Cam on shop nha!</td><td><span class="tag tag-danger">Closed</span></td><td>1 gio truoc</td></tr>
+              <tr><td><strong>Hoang E</strong></td><td><span class="tag tag-info">Zalo</span></td><td>Bao gio giao hang vay?</td><td><span class="tag tag-success">Active</span></td><td>2 gio truoc</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== LIVE CHAT ========== -->
+    <div class="page" id="page-livechat">
+      <div class="chat-layout">
+        <div class="chat-list">
+          <div class="chat-list-header">
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <strong style="font-size:16px;">Hoi thoai</strong>
+              <button class="btn btn-sm btn-primary">+ Moi</button>
+            </div>
+            <div class="chat-list-search">
+              <span>&#x1F50D;</span>
+              <input type="text" placeholder="Tim khach hang...">
+            </div>
+          </div>
+          <div class="chat-list-tabs">
+            <div class="chat-tab active">Tat ca (12)</div>
+            <div class="chat-tab">Chua doc (5)</div>
+            <div class="chat-tab">Bot (3)</div>
+          </div>
+          <div class="chat-items">
+            <div class="chat-item active" onclick="selectChat(0)">
+              <div class="avatar">NA</div>
+              <div class="chat-info">
+                <div class="chat-name">Nguyen Van An</div>
+                <div class="chat-preview">Em muon dat hang san pham...</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">2p</div>
+                <div class="chat-unread">3</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="selectChat(1)">
+              <div class="avatar" style="background:rgba(0,184,148,0.15);color:#00B894;">TB</div>
+              <div class="chat-info">
+                <div class="chat-name">Tran Thi Binh</div>
+                <div class="chat-preview">Cho em hoi gia ship ve HN...</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">5p</div>
+                <div class="chat-unread">1</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="selectChat(2)">
+              <div class="avatar" style="background:rgba(0,206,201,0.15);color:#00CEC9;">LC</div>
+              <div class="chat-info">
+                <div class="chat-name">Le Minh Cuong</div>
+                <div class="chat-preview">San pham nay con size L khong?</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">12p</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="selectChat(3)">
+              <div class="avatar" style="background:rgba(253,203,110,0.2);color:#E17055;">PD</div>
+              <div class="chat-info">
+                <div class="chat-name">Pham Hong Dao</div>
+                <div class="chat-preview">OK cam on shop!</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">1h</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="selectChat(4)">
+              <div class="avatar" style="background:rgba(108,92,231,0.1);color:var(--primary);">HE</div>
+              <div class="chat-info">
+                <div class="chat-name">Hoang Thi Em</div>
+                <div class="chat-preview">Bao gio giao hang vay shop?</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">2h</div>
+              </div>
+            </div>
+            <div class="chat-item" onclick="selectChat(5)">
+              <div class="avatar" style="background:rgba(225,112,85,0.1);color:var(--danger);">VF</div>
+              <div class="chat-info">
+                <div class="chat-name">Vu Dinh Phuc</div>
+                <div class="chat-preview">Co khuyen mai gi khong shop?</div>
+              </div>
+              <div class="chat-meta">
+                <div class="chat-time">3h</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="chat-main">
+          <div class="chat-main-header">
+            <div class="user-row">
+              <div class="avatar" style="width:36px;height:36px;font-size:13px;background:var(--primary-light);color:var(--primary-dark);">NA</div>
+              <div>
+                <strong style="font-size:14px;">Nguyen Van An</strong>
+                <div style="font-size:11px;color:var(--text-secondary);display:flex;align-items:center;gap:4px;">
+                  <span class="status-dot" style="width:8px;height:8px;"></span> Online - Messenger
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;gap:8px;">
+              <button class="btn btn-sm btn-secondary">&#x1F3F7; Tag</button>
+              <button class="btn btn-sm btn-secondary">&#x1F464; Assign</button>
+              <button class="btn btn-sm btn-danger">&#x2716; Close</button>
+            </div>
+          </div>
+          <div class="chat-messages" id="chat-messages">
+            <div class="msg incoming">
+              Chao shop, em muon hoi ve san pham kem duong da a
+              <div class="msg-time">10:30 AM</div>
+            </div>
+            <div class="msg bot">
+              <div class="bot-tag">&#x1F916; AI Bot</div>
+              Chao ban! &#x1F60A; Cam on ban da lien he. Shop dang co nhieu dong kem duong da. Ban muon tim loai nao: kem duong am, kem chong nang, hay kem tri mun a?
+              <div class="msg-time">10:30 AM</div>
+            </div>
+            <div class="msg incoming">
+              Em muon mua kem duong am cho da kho a
+              <div class="msg-time">10:31 AM</div>
+            </div>
+            <div class="msg bot">
+              <div class="bot-tag">&#x1F916; AI Bot</div>
+              Da, cho da kho thi shop recommend san pham nay:
+              <br><br>
+              &#x2B50; <strong>Kem Duong Am Intensive</strong><br>
+              - Gia: 350,000d<br>
+              - Thanh phan: Hyaluronic Acid, Ceramide<br>
+              - Dang duoc khuyen mai 20% con <strong>280,000d</strong><br><br>
+              Ban muon dat hang luon khong a? &#x1F60A;
+              <div class="msg-time">10:31 AM</div>
+            </div>
+            <div class="msg incoming">
+              OK em lay 2 hop nha. Ship ve Ha Noi bao nhieu?
+              <div class="msg-time">10:32 AM</div>
+            </div>
+            <div class="msg bot">
+              <div class="bot-tag">&#x1F916; AI Bot</div>
+              Da, 2 hop = 560,000d. Ship Ha Noi 30,000d. Tong: <strong>590,000d</strong>. &#x1F4E6;<br><br>
+              Ban cho shop thong tin giao hang nha:<br>
+              1. Ho ten nguoi nhan<br>
+              2. So dien thoai<br>
+              3. Dia chi cu the
+              <div class="msg-time">10:32 AM</div>
+            </div>
+            <div class="msg incoming">
+              Nguyen Van An - 0987654321 - 123 Le Loi, Dong Da, Ha Noi
+              <div class="msg-time">10:33 AM</div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <button class="btn btn-icon btn-secondary" title="Dinh kem">&#x1F4CE;</button>
+            <button class="btn btn-icon btn-secondary" title="Template">&#x1F4DD;</button>
+            <textarea placeholder="Nhap tin nhan..." id="chat-input" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+            <button class="send-btn" onclick="sendMsg()">&#x27A4;</button>
+          </div>
+        </div>
+        <div class="chat-sidebar">
+          <div class="profile-section">
+            <div class="profile-avatar">NA</div>
+            <div class="profile-name">Nguyen Van An</div>
+            <div class="profile-channel">&#x1F4AC; Messenger</div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div class="form-label">Thong tin</div>
+            <div class="info-row"><span class="label">SDT</span><span class="value">0987654321</span></div>
+            <div class="info-row"><span class="label">Email</span><span class="value">an@gmail.com</span></div>
+            <div class="info-row"><span class="label">Dia chi</span><span class="value">Ha Noi</span></div>
+            <div class="info-row"><span class="label">Tao luc</span><span class="value">01/09/2026</span></div>
+            <div class="info-row"><span class="label">Don hang</span><span class="value">3 don</span></div>
+            <div class="info-row"><span class="label">Tong chi</span><span class="value">1,450,000d</span></div>
+          </div>
+          <div style="margin-bottom:16px;">
+            <div class="form-label">Tags</div>
+            <div style="display:flex;gap:4px;flex-wrap:wrap;">
+              <span class="tag tag-primary">VIP</span>
+              <span class="tag tag-success">Returning</span>
+              <span class="tag tag-info">Ha Noi</span>
+            </div>
+          </div>
+          <div>
+            <div class="form-label">Ghi chu</div>
+            <textarea class="form-input" style="min-height:60px;" placeholder="Them ghi chu...">Khach quay lai, thich san pham duong da</textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== FLOW BUILDER ========== -->
+    <div class="page" id="page-flows">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <h3>Automation Flows</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Tao kich ban tu dong cho chatbot</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="showModal('template-modal')">&#x1F4CB; Templates</button>
+          <button class="btn btn-primary" onclick="showModal('flow-modal')">+ Tao flow moi</button>
+        </div>
+      </div>
+
+      <div class="grid-3" style="margin-bottom:16px;">
+        <div class="card" style="cursor:pointer;" onclick="showFlowBuilder()">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div class="stat-icon" style="background:rgba(0,184,148,0.1);color:var(--success);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">&#x26A1;</div>
+            <div>
+              <div style="font-weight:700;">Chao mung khach moi</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Trigger: First message</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="tag tag-success">Active</span>
+            <span style="font-size:12px;color:var(--text-secondary);">2,341 triggered</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;" onclick="showFlowBuilder()">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div class="stat-icon" style="background:rgba(108,92,231,0.1);color:var(--primary);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">&#x1F6D2;</div>
+            <div>
+              <div style="font-weight:700;">Tu van san pham</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Trigger: Keyword</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="tag tag-success">Active</span>
+            <span style="font-size:12px;color:var(--text-secondary);">5,672 triggered</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;" onclick="showFlowBuilder()">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+            <div class="stat-icon" style="background:rgba(0,206,201,0.1);color:var(--accent);width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;">&#x1F381;</div>
+            <div>
+              <div style="font-weight:700;">Cham soc sau mua</div>
+              <div style="font-size:12px;color:var(--text-secondary);">Trigger: Order complete</div>
+            </div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span class="tag tag-success">Active</span>
+            <span style="font-size:12px;color:var(--text-secondary);">1,089 triggered</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Flow Builder Canvas -->
+      <div class="card" id="flow-builder-area">
+        <div class="card-header">
+          <div class="card-title">&#x26A1; Flow: Chao mung khach moi</div>
+          <div style="display:flex;gap:8px;">
+            <button class="btn btn-sm btn-secondary">&#x2795; Trigger</button>
+            <button class="btn btn-sm btn-secondary">&#x2795; Action</button>
+            <button class="btn btn-sm btn-secondary">&#x2795; Condition</button>
+            <button class="btn btn-sm btn-secondary">&#x2795; AI Reply</button>
+            <button class="btn btn-sm btn-primary">&#x1F4BE; Luu</button>
+          </div>
+        </div>
+        <div class="flow-canvas" id="flow-canvas" style="height:420px;">
+          <svg style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;" id="flow-lines">
+            <line x1="160" y1="90" x2="160" y2="140" stroke="#6C5CE7" stroke-width="2" stroke-dasharray="6,4"/>
+            <line x1="160" y1="230" x2="100" y2="280" stroke="#6C5CE7" stroke-width="2" stroke-dasharray="6,4"/>
+            <line x1="160" y1="230" x2="320" y2="280" stroke="#6C5CE7" stroke-width="2" stroke-dasharray="6,4"/>
+            <line x1="100" y1="370" x2="220" y2="390" stroke="#6C5CE7" stroke-width="2" stroke-dasharray="6,4"/>
+          </svg>
+          <div class="flow-node trigger" style="top:20px;left:60px;">
+            <div class="node-header">&#x26A1; Trigger</div>
+            <div class="node-title">Khach nhan tin lan dau</div>
+            <div class="node-desc">First message received</div>
+            <div class="node-connector"></div>
+          </div>
+          <div class="flow-node action" style="top:140px;left:40px;">
+            <div class="node-header">&#x1F4AC; Action</div>
+            <div class="node-title">Gui loi chao</div>
+            <div class="node-desc">"Xin chao! Shop rat vui duoc tu van cho ban &#x1F60A;"</div>
+            <div class="node-connector"></div>
+          </div>
+          <div class="flow-node condition" style="top:280px;left:10px;">
+            <div class="node-header">&#x2753; Condition</div>
+            <div class="node-title">Gio lam viec?</div>
+            <div class="node-desc">8:00 - 22:00</div>
+            <div class="node-connector"></div>
+          </div>
+          <div class="flow-node ai" style="top:280px;left:260px;">
+            <div class="node-header">&#x1F916; AI Reply</div>
+            <div class="node-title">AI tu van tu dong</div>
+            <div class="node-desc">GPT-4o, knowledge base: products</div>
+            <div class="node-connector"></div>
+          </div>
+          <div class="flow-node action" style="top:390px;left:120px;">
+            <div class="node-header">&#x1F464; Action</div>
+            <div class="node-title">Chuyen cho nhan vien</div>
+            <div class="node-desc">Assign to available agent</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== BROADCASTS ========== -->
+    <div class="page" id="page-broadcasts">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <h3>Broadcast Campaigns</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Gui tin nhan hang loat qua Messenger, WhatsApp, TikTok</p>
+        </div>
+        <button class="btn btn-primary" onclick="showModal('broadcast-modal')">+ Tao chien dich</button>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:20px;">
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--primary);">12</div>
+          <div class="stat-label">Chien dich thang nay</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--success);">45,230</div>
+          <div class="stat-label">Tin da gui</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--accent);">78.5%</div>
+          <div class="stat-label">Ti le mo</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:#E17055;">12.3%</div>
+          <div class="stat-label">Ti le click</div>
+        </div>
+      </div>
+
+      <div class="broadcast-grid">
+        <div class="broadcast-card">
+          <div class="bc-header">
+            <div class="bc-title">Flash Sale 9.9</div>
+            <span class="tag tag-success">Da gui</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Messenger &bull; 05/09/2026</div>
+          <div style="font-size:13px;margin-bottom:12px;">&#x1F525; Sale KHUNG 9/9 - Giam den 50%! Nhan ngay voucher...</div>
+          <div class="bc-stats">
+            <div class="bc-stat"><div class="bc-stat-val">12,450</div><div class="bc-stat-label">Gui</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--success);">82%</div><div class="bc-stat-label">Mo</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--primary);">15%</div><div class="bc-stat-label">Click</div></div>
+          </div>
+        </div>
+        <div class="broadcast-card">
+          <div class="bc-header">
+            <div class="bc-title">San pham moi T9</div>
+            <span class="tag tag-primary">Dang gui</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">WhatsApp &bull; 07/09/2026</div>
+          <div style="font-size:13px;margin-bottom:12px;">&#x2728; Ra mat dong san pham moi! Uu dai 20% cho...</div>
+          <div class="bc-stats">
+            <div class="bc-stat"><div class="bc-stat-val">8,200</div><div class="bc-stat-label">Gui</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--success);">--</div><div class="bc-stat-label">Mo</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--primary);">--</div><div class="bc-stat-label">Click</div></div>
+          </div>
+        </div>
+        <div class="broadcast-card">
+          <div class="bc-header">
+            <div class="bc-title">Cham soc KH cu</div>
+            <span class="tag tag-warning">Hen gio</span>
+          </div>
+          <div style="font-size:12px;color:var(--text-secondary);margin-bottom:8px;">Messenger &bull; 10/09/2026</div>
+          <div style="font-size:13px;margin-bottom:12px;">&#x1F496; Cam on ban da dong hanh! Tang ban voucher 100K...</div>
+          <div class="bc-stats">
+            <div class="bc-stat"><div class="bc-stat-val">5,600</div><div class="bc-stat-label">Doi tuong</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--success);">--</div><div class="bc-stat-label">Mo</div></div>
+            <div class="bc-stat"><div class="bc-stat-val" style="color:var(--primary);">--</div><div class="bc-stat-label">Click</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Lich su chien dich</div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Ten</th><th>Kenh</th><th>Gui</th><th>Mo</th><th>Click</th><th>Trang thai</th><th>Ngay</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Flash Sale 8.8</strong></td><td>Messenger</td><td>15,200</td><td>85%</td><td>18%</td><td><span class="tag tag-success">Xong</span></td><td>08/08/2026</td></tr>
+              <tr><td><strong>Khuyen mai he</strong></td><td>WhatsApp</td><td>9,800</td><td>72%</td><td>11%</td><td><span class="tag tag-success">Xong</span></td><td>15/07/2026</td></tr>
+              <tr><td><strong>Ra mat san pham</strong></td><td>TikTok</td><td>6,500</td><td>68%</td><td>9%</td><td><span class="tag tag-success">Xong</span></td><td>01/07/2026</td></tr>
+              <tr><td><strong>Tri an khach hang</strong></td><td>Messenger</td><td>12,000</td><td>80%</td><td>14%</td><td><span class="tag tag-success">Xong</span></td><td>20/06/2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== CONTACTS ========== -->
+    <div class="page" id="page-contacts">
+      <div class="contacts-header">
+        <div>
+          <h3>Contacts</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Quan ly danh sach khach hang</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary">&#x1F4E5; Import</button>
+          <button class="btn btn-secondary">&#x1F4E4; Export</button>
+          <button class="btn btn-primary" onclick="showModal('contact-modal')">+ Them contact</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="margin-bottom:16px;">
+        <div class="stat-card">
+          <div class="stat-value">24,156</div>
+          <div class="stat-label">Tong contacts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--success);">18,430</div>
+          <div class="stat-label">Subscribers</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--primary);">3,240</div>
+          <div class="stat-label">Leads</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-value" style="color:var(--accent);">2,486</div>
+          <div class="stat-label">Customers</div>
+        </div>
+      </div>
+
+      <div class="filter-row">
+        <div class="filter-chip active">Tat ca</div>
+        <div class="filter-chip">Subscribers</div>
+        <div class="filter-chip">Leads</div>
+        <div class="filter-chip">Customers</div>
+        <div class="filter-chip">VIP</div>
+        <div class="filter-chip">Messenger</div>
+        <div class="filter-chip">WhatsApp</div>
+        <div class="filter-chip">TikTok</div>
+        <div class="filter-chip">Zalo</div>
+      </div>
+
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th><input type="checkbox"></th><th>Ten</th><th>SDT</th><th>Email</th><th>Kenh</th><th>Tag</th><th>Don hang</th><th>Ngay tao</th></tr>
+            </thead>
+            <tbody id="contacts-tbody">
+              <tr><td><input type="checkbox"></td><td><strong>Nguyen Van An</strong></td><td>0987654321</td><td>an@gmail.com</td><td><span class="tag tag-primary">Messenger</span></td><td><span class="tag tag-primary">VIP</span></td><td>3</td><td>01/09/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Tran Thi Binh</strong></td><td>0912345678</td><td>binh@gmail.com</td><td><span class="tag tag-success">WhatsApp</span></td><td><span class="tag tag-success">Customer</span></td><td>5</td><td>28/08/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Le Minh Cuong</strong></td><td>0976543210</td><td>cuong@gmail.com</td><td><span class="tag tag-info">TikTok</span></td><td><span class="tag tag-warning">Lead</span></td><td>0</td><td>05/09/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Pham Hong Dao</strong></td><td>0945678901</td><td>dao@gmail.com</td><td><span class="tag tag-primary">Messenger</span></td><td><span class="tag tag-success">Customer</span></td><td>2</td><td>20/08/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Hoang Thi Em</strong></td><td>0934567890</td><td>em@gmail.com</td><td><span class="tag tag-info">Zalo</span></td><td><span class="tag tag-primary">VIP</span></td><td>8</td><td>15/07/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Vu Dinh Phuc</strong></td><td>0923456789</td><td>phuc@gmail.com</td><td><span class="tag tag-primary">Messenger</span></td><td><span class="tag tag-warning">Lead</span></td><td>0</td><td>06/09/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Dang Thi Giang</strong></td><td>0956789012</td><td>giang@gmail.com</td><td><span class="tag tag-success">WhatsApp</span></td><td><span class="tag tag-success">Customer</span></td><td>4</td><td>10/08/2026</td></tr>
+              <tr><td><input type="checkbox"></td><td><strong>Bui Van Hai</strong></td><td>0967890123</td><td>hai@gmail.com</td><td><span class="tag tag-info">TikTok</span></td><td><span class="tag tag-warning">Lead</span></td><td>1</td><td>02/09/2026</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:16px;padding-top:16px;border-top:1px solid var(--border);">
+          <span style="font-size:13px;color:var(--text-secondary);">Hien thi 1-8 / 24,156</span>
+          <div style="display:flex;gap:4px;">
+            <button class="btn btn-sm btn-secondary">&lt;</button>
+            <button class="btn btn-sm btn-primary">1</button>
+            <button class="btn btn-sm btn-secondary">2</button>
+            <button class="btn btn-sm btn-secondary">3</button>
+            <button class="btn btn-sm btn-secondary">...</button>
+            <button class="btn btn-sm btn-secondary">&gt;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== AI AGENT ========== -->
+    <div class="page" id="page-aiagent">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <h3>AI Agent</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Rule-based + AI tu dong tra loi khach hang</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-primary" onclick="saveAgentConfig()">&#x1F4BE; Luu cau hinh</button>
+        </div>
+      </div>
+
+      <div class="agent-grid">
+        <!-- RULES -->
+        <div class="agent-card" style="grid-column:1/-1;">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+            <div><h3>&#x1F4CB; Auto-Reply Rules</h3><p>Khach nhan tin match keyword -> tra loi tu dong (uu tien truoc AI)</p></div>
+            <button class="btn btn-primary" onclick="addRule()">+ Them Rule</button>
+          </div>
+          <div id="rules-list" style="display:flex;flex-direction:column;gap:10px;">
+            <div style="text-align:center;padding:20px;color:var(--text-secondary);">Dang tai rules...</div>
+          </div>
+        </div>
+
+        <!-- AI CONFIG -->
+        <div class="agent-card">
+          <h3>&#x1F916; Cau hinh AI (Fallback)</h3>
+          <p>Khi khong co rule nao match, AI se tu tra loi</p>
+          <div class="toggle-row">
+            <div class="toggle-info"><div class="toggle-title">Bat AI tu dong tra loi</div><div class="toggle-desc">Dung AI khi khong match rule nao</div></div>
+            <div class="toggle" id="ai-enabled-toggle" onclick="this.classList.toggle('active')"></div>
+          </div>
+          <div class="form-group" style="margin-top:12px;">
+            <label class="form-label">AI Provider</label>
+            <select class="form-input" id="ai-provider">
+              <option value="openai">OpenAI (GPT)</option>
+              <option value="anthropic">Anthropic (Claude)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">AI Model</label>
+            <select class="form-input" id="ai-model">
+              <option value="gpt-4o-mini">GPT-4o Mini (Re)</option>
+              <option value="gpt-4o">GPT-4o</option>
+              <option value="claude-sonnet-4-20250514">Claude Sonnet 4</option>
+              <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">API Key</label>
+            <input class="form-input" id="ai-api-key" type="password" placeholder="sk-... hoac sk-ant-...">
+          </div>
+          <div class="form-group">
+            <label class="form-label">System Prompt (vai tro AI)</label>
+            <textarea class="form-input" id="ai-system-prompt" rows="4">Ban la tro ly ban hang cua HMONG4S. Ban tu van san pham, tra loi cau hoi, va ho tro dat hang. Luon than thien, nhiet tinh, chuyen nghiep. Tra loi bang tieng Viet.</textarea>
+          </div>
+        </div>
+
+        <!-- TEST CHAT -->
+        <div class="agent-card">
+          <h3>&#x1F9EA; Test Chat</h3>
+          <p>Thu rule + AI truoc khi chay that</p>
+          <div style="background:var(--bg);border-radius:var(--radius);height:320px;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:10px;margin-bottom:12px;" id="ai-test-chat">
+            <div style="text-align:center;color:var(--text-secondary);padding:40px 0;">Nhap tin nhan de test</div>
+          </div>
+          <div style="display:flex;gap:8px;">
+            <input class="form-input" placeholder="Nhap tin nhan test..." id="ai-test-input" style="flex:1;" onkeydown="if(event.key==='Enter')testAI()">
+            <button class="btn btn-primary" onclick="testAI()">Gui</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== ANALYTICS ========== -->
+    <div class="page" id="page-analytics">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <h3>Analytics</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Bao cao & thong ke chi tiet</p>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <select class="form-input" style="width:auto;padding:8px 12px;">
+            <option>7 ngay qua</option>
+            <option>30 ngay qua</option>
+            <option>Thang nay</option>
+            <option>Quy nay</option>
+          </select>
+          <button class="btn btn-secondary">&#x1F4E5; Export</button>
+        </div>
+      </div>
+
+      <div class="analytics-grid">
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(108,92,231,0.1);color:var(--primary)">&#x1F4AC;</div>
+            <span class="stat-change up">+18%</span>
+          </div>
+          <div class="stat-value">8,547</div>
+          <div class="stat-label">Tong hoi thoai</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(0,184,148,0.1);color:var(--success)">&#x1F916;</div>
+            <span class="stat-change up">+5%</span>
+          </div>
+          <div class="stat-value">94.7%</div>
+          <div class="stat-label">AI Resolution Rate</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(0,206,201,0.1);color:var(--accent)">&#x23F1;</div>
+            <span class="stat-change up">-22%</span>
+          </div>
+          <div class="stat-value">1.2s</div>
+          <div class="stat-label">Avg Response Time</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-header">
+            <div class="stat-icon" style="background:rgba(253,203,110,0.15);color:#E17055">&#x2B50;</div>
+            <span class="stat-change up">+3%</span>
+          </div>
+          <div class="stat-value">4.8</div>
+          <div class="stat-label">Customer Satisfaction</div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Hoi thoai & Conversions</div>
+          </div>
+          <canvas id="chartAnalytics" height="220"></canvas>
+        </div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Performance theo kenh</div>
+          </div>
+          <canvas id="chartPerformance" height="220"></canvas>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">Top Flows</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:18px;">&#x1F947;</span>
+              <div style="flex:1;"><div style="font-weight:600;font-size:13px;">Tu van san pham</div><div style="font-size:11px;color:var(--text-secondary);">5,672 triggered</div></div>
+              <span class="tag tag-success">32% conv</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:18px;">&#x1F948;</span>
+              <div style="flex:1;"><div style="font-weight:600;font-size:13px;">Chao mung khach moi</div><div style="font-size:11px;color:var(--text-secondary);">2,341 triggered</div></div>
+              <span class="tag tag-success">28% conv</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:18px;">&#x1F949;</span>
+              <div style="flex:1;"><div style="font-weight:600;font-size:13px;">Cham soc sau mua</div><div style="font-size:11px;color:var(--text-secondary);">1,089 triggered</div></div>
+              <span class="tag tag-success">45% conv</span>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">AI Performance</div>
+          <div style="display:flex;flex-direction:column;gap:12px;">
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Tu dong tra loi</span><strong>94.7%</strong></div><div style="background:var(--bg);border-radius:4px;height:8px;"><div style="background:var(--success);border-radius:4px;height:8px;width:94.7%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Chuyen nhan vien</span><strong>5.3%</strong></div><div style="background:var(--bg);border-radius:4px;height:8px;"><div style="background:var(--warning);border-radius:4px;height:8px;width:5.3%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Chot don thanh cong</span><strong>23.4%</strong></div><div style="background:var(--bg);border-radius:4px;height:8px;"><div style="background:var(--primary);border-radius:4px;height:8px;width:23.4%"></div></div></div>
+            <div><div style="display:flex;justify-content:space-between;font-size:13px;margin-bottom:4px;"><span>Khach hai long</span><strong>87.2%</strong></div><div style="background:var(--bg);border-radius:4px;height:8px;"><div style="background:var(--accent);border-radius:4px;height:8px;width:87.2%"></div></div></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-title" style="margin-bottom:16px;">Top Keywords</div>
+          <div style="display:flex;flex-direction:column;gap:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>gia</span><strong>1,245</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>ship</span><strong>987</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>mua</span><strong>876</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>khuyen mai</span><strong>654</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>doi tra</span><strong>432</strong></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px;"><span>size</span><strong>321</strong></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== GROWTH TOOLS ========== -->
+    <div class="page" id="page-growth">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+        <div>
+          <h3>Growth Tools</h3>
+          <p style="font-size:13px;color:var(--text-secondary);">Cong cu tang truong subscribers & leads</p>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F4AC;</div>
+            <h3 style="margin-bottom:8px;">Comment Auto-Reply</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Tu dong rep comment Facebook/Instagram de chuyen khach vao inbox</p>
+            <span class="tag tag-success">Active - 3 rules</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F517;</div>
+            <h3 style="margin-bottom:8px;">Ref URL / QR Code</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Tao link & QR code de khach scan va bat dau chat ngay</p>
+            <span class="tag tag-primary">5 links created</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F4E6;</div>
+            <h3 style="margin-bottom:8px;">Chat Widget</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Gan widget chat len website de thu thap khach hang</p>
+            <span class="tag tag-warning">Setup</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F3AF;</div>
+            <h3 style="margin-bottom:8px;">Landing Page</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Tao landing page thu lead va ket noi truc tiep voi chatbot</p>
+            <span class="tag tag-primary">2 pages</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F3B0;</div>
+            <h3 style="margin-bottom:8px;">Spin Wheel</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Vong quay may man tang voucher de thu hut subscriber</p>
+            <span class="tag tag-success">Active</span>
+          </div>
+        </div>
+        <div class="card" style="cursor:pointer;">
+          <div style="text-align:center;padding:20px 0;">
+            <div style="font-size:48px;margin-bottom:12px;">&#x1F4DD;</div>
+            <h3 style="margin-bottom:8px;">Web Form</h3>
+            <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Tao form thu thap thong tin khach hang tu website</p>
+            <span class="tag tag-primary">4 forms</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ========== SETTINGS ========== -->
+    <div class="page" id="page-settings">
+      <h3 style="margin-bottom:20px;">Settings</h3>
+      <div class="settings-layout">
+        <div class="settings-nav">
+          <div class="settings-nav-item active" onclick="showSettingsTab('channels')">Kenh ket noi</div>
+          <div class="settings-nav-item" onclick="showSettingsTab('team')">Doi nhom</div>
+          <div class="settings-nav-item" onclick="showSettingsTab('general')">Chung</div>
+          <div class="settings-nav-item" onclick="showSettingsTab('billing')">Thanh toan</div>
+          <div class="settings-nav-item" onclick="showSettingsTab('api')">API & Webhooks</div>
+        </div>
+        <div>
+          <!-- Channels -->
+          <div class="settings-tab" id="settings-channels">
+            <!-- Facebook App ID Setup -->
+            <div class="card" id="fb-appid-setup">
+              <div class="card-header">
+                <div class="card-title">&#x1F527; Cau hinh Facebook App</div>
+              </div>
+              <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">
+                De ket noi Facebook Page, ban can tao 1 Facebook App tai
+                <a href="https://developers.facebook.com" target="_blank" style="color:var(--primary);font-weight:600;">developers.facebook.com</a>
+              </p>
+
+              <div class="setup-step">
+                <div class="step-num">1</div>
+                <div class="step-content">
+                  <div class="step-title">Tao Facebook App</div>
+                  <div class="step-desc">Vao developers.facebook.com > My Apps > Create App > Chon "Business" > Dat ten app (vd: HungBot)</div>
+                </div>
+              </div>
+              <div class="setup-step">
+                <div class="step-num">2</div>
+                <div class="step-content">
+                  <div class="step-title">Them san pham "Facebook Login"</div>
+                  <div class="step-desc">Trong Dashboard app > Add Product > Facebook Login for Business > chon Web</div>
+                </div>
+              </div>
+              <div class="setup-step">
+                <div class="step-num">3</div>
+                <div class="step-content">
+                  <div class="step-title">Cau hinh domain</div>
+                  <div class="step-desc">Facebook Login > Settings > Valid OAuth Redirect URIs: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">http://localhost:3700</code><br>App Domains: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">localhost</code></div>
+                </div>
+              </div>
+              <div class="setup-step" style="border-bottom:none;">
+                <div class="step-num">4</div>
+                <div class="step-content">
+                  <div class="step-title">Copy App ID vao day</div>
+                  <div class="step-desc">
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                      <input class="form-input" id="fb-app-id-input" placeholder="Nhap Facebook App ID (vd: 123456789012345)" style="flex:1;" value="">
+                      <button class="btn btn-primary" onclick="saveFBAppId()">Luu & Ket noi</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Facebook Connect Banner (shown after App ID saved) -->
+            <div id="fb-connect-section" style="display:none;">
+              <!-- User info when logged in -->
+              <div id="fb-user-section" style="display:none;">
+                <div class="fb-user-info" id="fb-user-row">
+                  <img id="fb-user-pic" src="" alt="">
+                  <div style="flex:1;">
+                    <div class="fb-user-name" id="fb-user-name"></div>
+                    <div class="fb-user-id" id="fb-user-id-text"></div>
+                  </div>
+                  <button class="btn btn-sm btn-secondary" onclick="fbLogout()">Dang xuat FB</button>
+                  <button class="btn btn-sm btn-secondary" onclick="document.getElementById('fb-appid-setup').style.display='block'">&#x2699; App ID</button>
+                </div>
+              </div>
+
+              <!-- Login banner when not logged in -->
+              <div id="fb-login-banner">
+                <div class="fb-connect-banner">
+                  <div class="fb-logo">&#x1F4D8;</div>
+                  <div class="fb-text">
+                    <h3>Ket noi Facebook</h3>
+                    <p>Dang nhap Facebook de quan ly Pages, nhan tin voi khach hang qua Messenger</p>
+                  </div>
+                  <button class="btn-fb" onclick="fbLogin()">
+                    <span style="font-size:18px;">&#x1F512;</span> Dang nhap Facebook
+                  </button>
+                </div>
+              </div>
+
+              <!-- Connected Pages -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Facebook Pages</div>
+                  <button class="btn btn-sm btn-primary" onclick="fbRefreshPages()" id="btn-refresh-pages" style="display:none;">&#x1F504; Lam moi</button>
+                </div>
+                <div id="fb-pages-list">
+                  <div class="empty-state" style="padding:30px;">
+                    <div class="empty-icon">&#x1F4C4;</div>
+                    <h3>Chua co Page nao</h3>
+                    <p>Dang nhap Facebook de xem danh sach Pages cua ban</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Connected Pages that are active -->
+              <div class="card" id="connected-pages-card" style="display:none;">
+                <div class="card-header">
+                  <div class="card-title">&#x2705; Pages dang hoat dong</div>
+                </div>
+                <div id="connected-pages-list"></div>
+              </div>
+
+              <!-- Page conversations preview -->
+              <div class="card" id="page-conversations-card" style="display:none;">
+                <div class="card-header">
+                  <div class="card-title" id="page-conv-title">Hoi thoai gan day</div>
+                  <button class="btn btn-sm btn-secondary" onclick="showPage('livechat')">Xem tat ca</button>
+                </div>
+                <div id="page-conversations-list"></div>
+              </div>
+            </div>
+
+            <!-- Other channels -->
+            <div class="card" style="margin-top:16px;">
+              <div class="card-header">
+                <div class="card-title">Kenh khac</div>
+              </div>
+              <div class="channel-card" style="border-style:dashed;opacity:0.7;">
+                <div class="ch-icon" style="background:rgba(37,211,102,0.1);color:#25D366;">&#x1F4F1;</div>
+                <div class="ch-info">
+                  <div class="ch-name">WhatsApp Business</div>
+                  <div class="ch-desc">Can WhatsApp Business API</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" disabled>Sap co</button>
+              </div>
+              <div class="channel-card" style="border-style:dashed;opacity:0.7;">
+                <div class="ch-icon" style="background:rgba(0,0,0,0.05);color:#000;">&#x1F3B5;</div>
+                <div class="ch-info">
+                  <div class="ch-name">TikTok</div>
+                  <div class="ch-desc">Can TikTok Business API</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" disabled>Sap co</button>
+              </div>
+              <div class="channel-card" style="border-style:dashed;opacity:0.7;">
+                <div class="ch-icon" style="background:rgba(0,106,255,0.1);color:#006AFF;">&#x1F4AC;</div>
+                <div class="ch-info">
+                  <div class="ch-name">Zalo OA</div>
+                  <div class="ch-desc">Can Zalo OA API</div>
+                </div>
+                <button class="btn btn-sm btn-secondary" disabled>Sap co</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team -->
+          <div class="settings-tab" id="settings-team" style="display:none;">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Thanh vien</div>
+                <button class="btn btn-primary">+ Moi thanh vien</button>
+              </div>
+              <table style="width:100%;">
+                <thead><tr><th>Ten</th><th>Email</th><th>Vai tro</th><th>Trang thai</th><th></th></tr></thead>
+                <tbody>
+                  <tr><td><strong>Hung Tran</strong></td><td>hungg7663@gmail.com</td><td><span class="tag tag-primary">Admin</span></td><td><span class="tag tag-success">Active</span></td><td><button class="btn btn-sm btn-secondary">&#x2699;</button></td></tr>
+                  <tr><td><strong>Nhan vien A</strong></td><td>nva@gmail.com</td><td><span class="tag tag-info">Agent</span></td><td><span class="tag tag-success">Active</span></td><td><button class="btn btn-sm btn-secondary">&#x2699;</button></td></tr>
+                  <tr><td><strong>Nhan vien B</strong></td><td>nvb@gmail.com</td><td><span class="tag tag-info">Agent</span></td><td><span class="tag tag-warning">Offline</span></td><td><button class="btn btn-sm btn-secondary">&#x2699;</button></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- General -->
+          <div class="settings-tab" id="settings-general" style="display:none;">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:16px;">Cai dat chung</div>
+              <div class="form-group">
+                <label class="form-label">Ten doanh nghiep</label>
+                <input class="form-input" value="HMONG4S GROUP">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Timezone</label>
+                <select class="form-input">
+                  <option>Asia/Ho_Chi_Minh (UTC+7)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Gio lam viec</label>
+                <div style="display:flex;gap:8px;">
+                  <input class="form-input" type="time" value="08:00" style="width:auto;">
+                  <span style="align-self:center;">-</span>
+                  <input class="form-input" type="time" value="22:00" style="width:auto;">
+                </div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="toggle-title">Thong bao email</div><div class="toggle-desc">Nhan email khi co hoi thoai moi</div></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="toggle-title">Thong bao push</div><div class="toggle-desc">Nhan thong bao tren dien thoai</div></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <button class="btn btn-primary" style="margin-top:16px;">Luu thay doi</button>
+            </div>
+          </div>
+
+          <!-- Billing -->
+          <div class="settings-tab" id="settings-billing" style="display:none;">
+            <div class="card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+                <div>
+                  <div class="card-title">Goi hien tai: Pro Plan</div>
+                  <div style="font-size:13px;color:var(--text-secondary);margin-top:4px;">Gia han: 07/10/2026</div>
+                </div>
+                <button class="btn btn-primary">Nang cap</button>
+              </div>
+              <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+                <div style="text-align:center;padding:16px;background:var(--bg);border-radius:var(--radius);">
+                  <div style="font-size:24px;font-weight:800;color:var(--primary);">24,156 / 50,000</div>
+                  <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Contacts</div>
+                </div>
+                <div style="text-align:center;padding:16px;background:var(--bg);border-radius:var(--radius);">
+                  <div style="font-size:24px;font-weight:800;color:var(--success);">45,230 / 100,000</div>
+                  <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Tin nhan/thang</div>
+                </div>
+                <div style="text-align:center;padding:16px;background:var(--bg);border-radius:var(--radius);">
+                  <div style="font-size:24px;font-weight:800;color:var(--accent);">3 / 5</div>
+                  <div style="font-size:12px;color:var(--text-secondary);margin-top:4px;">Team members</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- API -->
+          <div class="settings-tab" id="settings-api" style="display:none;">
+            <div class="card">
+              <div class="card-title" style="margin-bottom:16px;">API Keys</div>
+              <div class="form-group">
+                <label class="form-label">API Key</label>
+                <div style="display:flex;gap:8px;">
+                  <input class="form-input" value="hb_live_xxxxxxxxxxxxxxxxxxxxx" type="password" id="api-key">
+                  <button class="btn btn-secondary" onclick="document.getElementById('api-key').type=document.getElementById('api-key').type==='password'?'text':'password'">&#x1F441;</button>
+                  <button class="btn btn-secondary">Copy</button>
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Webhook URL</label>
+                <input class="form-input" placeholder="https://your-server.com/webhook">
+              </div>
+              <div class="card-title" style="margin:20px 0 12px;">Webhook Events</div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="toggle-title">message.received</div><div class="toggle-desc">Khi nhan tin nhan moi</div></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="toggle-title">contact.created</div><div class="toggle-desc">Khi co contact moi</div></div>
+                <div class="toggle" onclick="this.classList.toggle('active')"></div>
+              </div>
+              <div class="toggle-row">
+                <div class="toggle-info"><div class="toggle-title">order.created</div><div class="toggle-desc">Khi co don hang moi</div></div>
+                <div class="toggle active" onclick="this.classList.toggle('active')"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="broadcast-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>&#x1F4E2; Tao chien dich Broadcast</h3>
+    <div class="form-group">
+      <label class="form-label">Ten chien dich</label>
+      <input class="form-input" placeholder="VD: Flash Sale 9.9">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kenh gui</label>
+      <select class="form-input">
+        <option>Messenger</option>
+        <option>WhatsApp</option>
+        <option>TikTok</option>
+        <option>Zalo</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Doi tuong</label>
+      <select class="form-input">
+        <option>Tat ca subscribers (18,430)</option>
+        <option>Customers (2,486)</option>
+        <option>VIP (560)</option>
+        <option>Leads (3,240)</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Noi dung tin nhan</label>
+      <textarea class="form-input" placeholder="Nhap noi dung broadcast..."></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Hen gio gui</label>
+      <input class="form-input" type="datetime-local">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal()">Huy</button>
+      <button class="btn btn-primary" onclick="closeModal()">Tao chien dich</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="contact-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>&#x1F464; Them Contact</h3>
+    <div class="form-group">
+      <label class="form-label">Ho ten</label>
+      <input class="form-input" placeholder="Nguyen Van A">
+    </div>
+    <div class="form-group">
+      <label class="form-label">So dien thoai</label>
+      <input class="form-input" placeholder="0987654321">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input class="form-input" placeholder="email@gmail.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Kenh</label>
+      <select class="form-input">
+        <option>Messenger</option>
+        <option>WhatsApp</option>
+        <option>TikTok</option>
+        <option>Zalo</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Tags</label>
+      <input class="form-input" placeholder="VIP, Customer, Lead...">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal()">Huy</button>
+      <button class="btn btn-primary" onclick="closeModal()">Them contact</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="flow-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>&#x26A1; Tao Flow moi</h3>
+    <div class="form-group">
+      <label class="form-label">Ten flow</label>
+      <input class="form-input" placeholder="VD: Tu van san pham moi">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Trigger</label>
+      <select class="form-input">
+        <option>Tin nhan dau tien</option>
+        <option>Keyword</option>
+        <option>Button click</option>
+        <option>Comment reply</option>
+        <option>Subscription</option>
+        <option>Custom event</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mo ta</label>
+      <textarea class="form-input" placeholder="Mo ta muc dich cua flow..."></textarea>
+    </div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;">
+      <button class="btn btn-secondary" onclick="closeModal()">Huy</button>
+      <button class="btn btn-primary" onclick="closeModal()">Tao flow</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="template-modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h3>&#x1F4CB; Flow Templates</h3>
+    <p style="font-size:13px;color:var(--text-secondary);margin-bottom:16px;">Chon template co san de bat dau nhanh</p>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="closeModal()">
+        <span style="font-size:28px;">&#x1F44B;</span>
+        <div><div style="font-weight:700;">Welcome Flow</div><div style="font-size:12px;color:var(--text-secondary);">Chao don khach moi, hoi nhu cau</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="closeModal()">
+        <span style="font-size:28px;">&#x1F6D2;</span>
+        <div><div style="font-weight:700;">Sales Funnel</div><div style="font-size:12px;color:var(--text-secondary);">Tu van > Goi y SP > Chot don</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="closeModal()">
+        <span style="font-size:28px;">&#x2753;</span>
+        <div><div style="font-weight:700;">FAQ Bot</div><div style="font-size:12px;color:var(--text-secondary);">Tra loi cau hoi thuong gap tu dong</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="closeModal()">
+        <span style="font-size:28px;">&#x1F4E6;</span>
+        <div><div style="font-weight:700;">Order Tracking</div><div style="font-size:12px;color:var(--text-secondary);">Khach tra cuu don hang qua chat</div></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--border);border-radius:var(--radius);cursor:pointer;" onclick="closeModal()">
+        <span style="font-size:28px;">&#x1F381;</span>
+        <div><div style="font-weight:700;">Post-Purchase</div><div style="font-size:12px;color:var(--text-secondary);">Cham soc sau mua, xin danh gia</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const pageTitles = {
+  dashboard: 'Dashboard',
+  livechat: 'Live Chat',
+  flows: 'Automation',
+  broadcasts: 'Broadcasts',
+  contacts: 'Contacts',
+  aiagent: 'AI Agent',
+  analytics: 'Analytics',
+  growth: 'Growth Tools',
+  settings: 'Settings'
+};
+
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  document.getElementById('page-title').textContent = pageTitles[page] || page;
+  event.currentTarget.classList.add('active');
+
+  if (page === 'dashboard') initDashboardCharts();
+  if (page === 'analytics') initAnalyticsCharts();
+}
+
+function showModal(id) {
+  document.getElementById(id).classList.add('show');
+}
+function closeModal() {
+  document.querySelectorAll('.modal-overlay').forEach(m => m.classList.remove('show'));
+}
+
+function showSettingsTab(tab) {
+  document.querySelectorAll('.settings-tab').forEach(t => t.style.display = 'none');
+  document.querySelectorAll('.settings-nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('settings-' + tab).style.display = 'block';
+  event.currentTarget.classList.add('active');
+}
+
+function sendMsg() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  const msgs = document.getElementById('chat-messages');
+  const msg = document.createElement('div');
+  msg.className = 'msg outgoing';
+  msg.innerHTML = text + '<div class="msg-time">' + new Date().toLocaleTimeString('vi', {hour:'2-digit',minute:'2-digit'}) + '</div>';
+  msgs.appendChild(msg);
+  input.value = '';
+  msgs.scrollTop = msgs.scrollHeight;
+
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot';
+    const responses = [
+      'Da, em ghi nhan thong tin roi a! Don hang se duoc xu ly ngay. Cam on ban! &#x1F60A;',
+      'Shop se gui hang trong ngay hom nay. Ban se nhan duoc ma van don qua tin nhan nha! &#x1F4E6;',
+      'Cam on ban da mua hang! Co gi can ho tro them cu nhan tin cho shop nha &#x2764;',
+      'Da, ban oi! Shop dang kiem tra va se phan hoi trong 5 phut nha!'
+    ];
+    botMsg.innerHTML = '<div class="bot-tag">&#x1F916; AI Bot</div>' + responses[Math.floor(Math.random()*responses.length)] + '<div class="msg-time">' + new Date().toLocaleTimeString('vi', {hour:'2-digit',minute:'2-digit'}) + '</div>';
+    msgs.appendChild(botMsg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }, 1000);
+}
+
+function testAI() {
+  const input = document.getElementById('ai-test-input');
+  const text = input.value.trim();
+  if (!text) return;
+  const chat = document.getElementById('ai-test-chat');
+
+  const userMsg = document.createElement('div');
+  userMsg.className = 'msg incoming';
+  userMsg.style.maxWidth = '85%';
+  userMsg.innerHTML = text + '<div class="msg-time">Test user</div>';
+  chat.appendChild(userMsg);
+  input.value = '';
+
+  setTimeout(() => {
+    const botMsg = document.createElement('div');
+    botMsg.className = 'msg bot';
+    botMsg.style.maxWidth = '85%';
+    const responses = [
+      'Da ban oi! Day la cac san pham phu hop voi nhu cau cua ban. Ban muon xem chi tiet san pham nao a? &#x1F60A;',
+      'Cam on ban da hoi! Hien tai shop dang co chuong trinh khuyen mai giam 20% cho don hang tu 500K. Ban muon mua gi a?',
+      'Da, san pham nay hien con hang a! Ban muon dat mau nao? Shop co nhieu size va mau de ban lua chon &#x1F3A8;'
+    ];
+    botMsg.innerHTML = '<div class="bot-tag">&#x1F916; AI</div>' + responses[Math.floor(Math.random()*responses.length)];
+    chat.appendChild(botMsg);
+    chat.scrollTop = chat.scrollHeight;
+  }, 800);
+}
+
+function selectChat(idx) {
+  document.querySelectorAll('.chat-item').forEach(c => c.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+}
+
+// CHARTS
+let chartConv, chartCh, chartAn, chartPerf;
+
+function initDashboardCharts() {
+  if (chartConv) return;
+
+  const ctxConv = document.getElementById('chartConversations').getContext('2d');
+  chartConv = new Chart(ctxConv, {
+    type: 'line',
+    data: {
+      labels: ['T2','T3','T4','T5','T6','T7','CN'],
+      datasets: [{
+        label: 'Hoi thoai',
+        data: [1200,1350,1100,1450,1600,1250,1350],
+        borderColor: '#6C5CE7', backgroundColor: 'rgba(108,92,231,0.1)',
+        fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#6C5CE7'
+      },{
+        label: 'AI Reply',
+        data: [1100,1280,1050,1380,1520,1180,1290],
+        borderColor: '#00CEC9', backgroundColor: 'rgba(0,206,201,0.1)',
+        fill: true, tension: 0.4, pointRadius: 4, pointBackgroundColor: '#00CEC9'
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  const ctxCh = document.getElementById('chartChannels').getContext('2d');
+  chartCh = new Chart(ctxCh, {
+    type: 'doughnut',
+    data: {
+      labels: ['Messenger','WhatsApp','TikTok','Zalo'],
+      datasets: [{ data: [45,25,20,10], backgroundColor: ['#1877F2','#25D366','#000000','#006AFF'] }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+}
+
+function initAnalyticsCharts() {
+  if (chartAn) return;
+
+  const ctxAn = document.getElementById('chartAnalytics').getContext('2d');
+  chartAn = new Chart(ctxAn, {
+    type: 'bar',
+    data: {
+      labels: ['T2','T3','T4','T5','T6','T7','CN'],
+      datasets: [{
+        label: 'Hoi thoai',
+        data: [1200,1350,1100,1450,1600,1250,1350],
+        backgroundColor: 'rgba(108,92,231,0.7)', borderRadius: 6
+      },{
+        label: 'Conversions',
+        data: [180,220,165,280,310,195,240],
+        backgroundColor: 'rgba(0,184,148,0.7)', borderRadius: 6
+      }]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
+  });
+
+  const ctxPerf = document.getElementById('chartPerformance').getContext('2d');
+  chartPerf = new Chart(ctxPerf, {
+    type: 'radar',
+    data: {
+      labels: ['Response Time','Resolution Rate','Satisfaction','Conversion','Engagement'],
+      datasets: [{
+        label: 'Performance',
+        data: [92,95,88,78,85],
+        borderColor: '#6C5CE7', backgroundColor: 'rgba(108,92,231,0.15)',
+        pointBackgroundColor: '#6C5CE7'
+      }]
+    },
+    options: { responsive: true, scales: { r: { beginAtZero: true, max: 100 } } }
+  });
+}
+
+// Filter chips
+document.querySelectorAll('.filter-chip').forEach(chip => {
+  chip.addEventListener('click', function() {
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// Chat tabs
+document.querySelectorAll('.chat-tab').forEach(tab => {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.chat-tab').forEach(t => t.classList.remove('active'));
+    this.classList.add('active');
+  });
+});
+
+// ==========================================
+// FACEBOOK INTEGRATION (OAuth redirect, no SDK)
+// ==========================================
+
+const FB_API = 'https://graph.facebook.com/v21.0';
+const FB_SCOPES = 'pages_show_list,pages_messaging,pages_read_engagement,pages_manage_metadata';
+let fbAccessToken = localStorage.getItem('hungbot_fb_token') || null;
+let fbUserData = null;
+let fbPages = [];
+let connectedPages = [];
+
+function fbGraph(endpoint, params) {
+  const url = new URL(FB_API + endpoint);
+  if (params) Object.keys(params).forEach(function(k) { url.searchParams.set(k, params[k]); });
+  return fetch(url.toString()).then(function(r) { return r.json(); });
+}
+
+function saveFBAppId() {
+  const appId = document.getElementById('fb-app-id-input').value.trim();
+  if (!appId || !/^\d{10,20}$/.test(appId)) {
+    alert('App ID khong hop le! Phai la day so 10-20 ky tu.');
+    return;
+  }
+  localStorage.setItem('hungbot_fb_app_id', appId);
+  document.getElementById('fb-appid-setup').style.display = 'none';
+  document.getElementById('fb-connect-section').style.display = 'block';
+}
+
+function initFBUI() {
+  var appId = localStorage.getItem('hungbot_fb_app_id');
+  if (appId) {
+    document.getElementById('fb-app-id-input').value = appId;
+  }
+
+  // Check if returning from Facebook OAuth redirect
+  handleFBRedirect();
+
+  var saved = localStorage.getItem('hungbot_connected_pages');
+  if (saved) {
+    try { connectedPages = JSON.parse(saved); } catch(e) { connectedPages = []; }
+    if (connectedPages.length > 0) renderConnectedPages();
+  }
+
+  // If we have a token, show connected state
+  if (fbAccessToken) {
+    document.getElementById('fb-appid-setup').style.display = 'none';
+    document.getElementById('fb-connect-section').style.display = 'block';
+    onFBConnected();
+  } else if (appId) {
+    document.getElementById('fb-appid-setup').style.display = 'none';
+    document.getElementById('fb-connect-section').style.display = 'block';
+  }
+}
+
+function handleFBRedirect() {
+  var hash = window.location.hash;
+  if (!hash || hash.indexOf('access_token') === -1) return;
+
+  var params = {};
+  hash.substring(1).split('&').forEach(function(part) {
+    var kv = part.split('=');
+    params[decodeURIComponent(kv[0])] = decodeURIComponent(kv[1] || '');
+  });
+
+  if (params.access_token) {
+    fbAccessToken = params.access_token;
+    localStorage.setItem('hungbot_fb_token', fbAccessToken);
+    // Clean URL
+    history.replaceState(null, '', window.location.pathname);
+  }
+}
+
+function fbLogin() {
+  var appId = localStorage.getItem('hungbot_fb_app_id');
+  if (!appId) {
+    document.getElementById('fb-appid-setup').style.display = 'block';
+    alert('Ban can nhap Facebook App ID truoc!');
+    return;
+  }
+  var redirectUri = window.location.origin + window.location.pathname;
+  var url = 'https://www.facebook.com/v21.0/dialog/oauth'
+    + '?client_id=' + appId
+    + '&redirect_uri=' + encodeURIComponent(redirectUri)
+    + '&scope=' + FB_SCOPES
+    + '&response_type=token';
+  window.location.href = url;
+}
+
+function onFBConnected() {
+  if (!fbAccessToken) return;
+
+  document.getElementById('fb-login-banner').style.display = 'none';
+  document.getElementById('fb-user-section').style.display = 'block';
+  document.getElementById('btn-refresh-pages').style.display = 'inline-flex';
+
+  fbGraph('/me', { fields: 'id,name,picture.width(100)', access_token: fbAccessToken })
+    .then(function(user) {
+      if (user.error) {
+        // Token expired
+        fbAccessToken = null;
+        localStorage.removeItem('hungbot_fb_token');
+        document.getElementById('fb-user-section').style.display = 'none';
+        document.getElementById('fb-login-banner').style.display = 'block';
+        document.getElementById('btn-refresh-pages').style.display = 'none';
+        return;
+      }
+      fbUserData = user;
+      document.getElementById('fb-user-name').textContent = user.name;
+      document.getElementById('fb-user-id-text').textContent = 'ID: ' + user.id;
+      if (user.picture && user.picture.data) {
+        document.getElementById('fb-user-pic').src = user.picture.data.url;
+      }
+      var sidebarName = document.querySelector('.sidebar-footer .user-name');
+      if (sidebarName) sidebarName.textContent = user.name;
+    })
+    .catch(function() {});
+
+  fbRefreshPages();
+}
+
+function fbRefreshPages() {
+  if (!fbAccessToken) return;
+
+  document.getElementById('fb-pages-list').innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);"><div style="font-size:24px;margin-bottom:8px;">&#x23F3;</div>Dang tai danh sach Pages...</div>';
+
+  fbGraph('/me/accounts', {
+    fields: 'id,name,category,fan_count,picture.width(100),access_token,cover',
+    access_token: fbAccessToken
+  }).then(function(res) {
+    if (res.error) {
+      document.getElementById('fb-pages-list').innerHTML =
+        '<div style="padding:16px;color:var(--danger);font-size:13px;">Loi: ' + (res.error.message || 'Khong the tai Pages') + '</div>';
+      return;
+    }
+    fbPages = res.data || [];
+    renderFBPages();
+  }).catch(function(err) {
+    document.getElementById('fb-pages-list').innerHTML =
+      '<div style="padding:16px;color:var(--danger);font-size:13px;">Loi ket noi: ' + err.message + '</div>';
+  });
+}
+
+function renderFBPages() {
+  const container = document.getElementById('fb-pages-list');
+
+  if (fbPages.length === 0) {
+    container.innerHTML = '<div class="empty-state" style="padding:30px;"><div class="empty-icon">&#x1F4C4;</div><h3>Khong tim thay Page nao</h3><p>Tai khoan Facebook nay chua quan ly Page nao, hoac ban chua cap quyen.</p></div>';
+    return;
+  }
+
+  let html = '';
+  fbPages.forEach(function(page) {
+    const isConnected = connectedPages.some(function(cp) { return cp.id === page.id; });
+    const picUrl = (page.picture && page.picture.data) ? page.picture.data.url : '';
+    const fans = page.fan_count ? page.fan_count.toLocaleString('vi') : '0';
+
+    html += '<div class="page-card ' + (isConnected ? 'selected' : '') + '" id="page-card-' + page.id + '">'
+      + '<img class="page-avatar" src="' + picUrl + '" alt="' + page.name + '">'
+      + '<div class="page-info">'
+      + '<div class="page-name">' + page.name + '</div>'
+      + '<div class="page-cat">' + (page.category || '') + '</div>'
+      + '<div class="page-fans">' + fans + ' nguoi thich</div>'
+      + '</div>'
+      + '<div class="page-status">'
+      + (isConnected
+        ? '<button class="btn btn-sm btn-danger" onclick="disconnectPage(\'' + page.id + '\')">Ngat ket noi</button>'
+        : '<button class="btn btn-sm btn-primary" onclick="connectPage(\'' + page.id + '\')">Ket noi</button>')
+      + '</div>'
+      + '</div>';
+  });
+
+  container.innerHTML = html;
+}
+
+function connectPage(pageId) {
+  const page = fbPages.find(function(p) { return p.id === pageId; });
+  if (!page) return;
+
+  const existing = connectedPages.find(function(cp) { return cp.id === pageId; });
+  if (existing) return;
+
+  connectedPages.push({
+    id: page.id,
+    name: page.name,
+    category: page.category || '',
+    fan_count: page.fan_count || 0,
+    picture: (page.picture && page.picture.data) ? page.picture.data.url : '',
+    access_token: page.access_token,
+    connected_at: new Date().toISOString()
+  });
+
+  localStorage.setItem('hungbot_connected_pages', JSON.stringify(connectedPages));
+
+  renderFBPages();
+  renderConnectedPages();
+  loadPageConversations(pageId);
+
+  // Save page token to server for auto-reply
+  fetch('/api/page-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pageId: page.id, pageToken: page.access_token, pageName: page.name })
+  }).catch(function() {});
+
+  // Subscribe to page webhooks
+  fetch(FB_API + '/' + pageId + '/subscribed_apps', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      subscribed_fields: 'messages,messaging_postbacks,feed',
+      access_token: page.access_token
+    })
+  }).then(function(r) { return r.json(); })
+    .then(function(res) { console.log('Subscribed page ' + page.name + ':', res); })
+    .catch(function() {});
+}
+
+function disconnectPage(pageId) {
+  connectedPages = connectedPages.filter(function(cp) { return cp.id !== pageId; });
+  localStorage.setItem('hungbot_connected_pages', JSON.stringify(connectedPages));
+  renderFBPages();
+  renderConnectedPages();
+}
+
+function renderConnectedPages() {
+  const card = document.getElementById('connected-pages-card');
+  const container = document.getElementById('connected-pages-list');
+
+  if (connectedPages.length === 0) {
+    card.style.display = 'none';
+    return;
+  }
+
+  card.style.display = 'block';
+  let html = '';
+
+  connectedPages.forEach(function(page) {
+    const connDate = new Date(page.connected_at).toLocaleDateString('vi');
+    html += '<div class="connected-page-row">'
+      + '<img src="' + page.picture + '" alt="' + page.name + '">'
+      + '<div class="cp-info">'
+      + '<div class="cp-name">' + page.name + '</div>'
+      + '<div class="cp-detail">' + page.category + ' &bull; ' + (page.fan_count || 0).toLocaleString('vi') + ' fans &bull; Ket noi: ' + connDate + '</div>'
+      + '</div>'
+      + '<div class="cp-actions">'
+      + '<button class="btn btn-sm btn-secondary" onclick="loadPageConversations(\'' + page.id + '\')">&#x1F4AC; Hoi thoai</button>'
+      + '<button class="btn btn-sm btn-secondary" onclick="viewPageInsights(\'' + page.id + '\')">&#x1F4CA; Insights</button>'
+      + '<button class="btn btn-sm btn-danger" onclick="disconnectPage(\'' + page.id + '\')">&#x2716;</button>'
+      + '</div>'
+      + '</div>';
+  });
+
+  container.innerHTML = html;
+
+  // Update sidebar badge
+  const badge = document.querySelector('.nav-item .badge');
+  if (badge) badge.textContent = connectedPages.length;
+}
+
+function loadPageConversations(pageId) {
+  const page = connectedPages.find(function(cp) { return cp.id === pageId; });
+  if (!page || !page.access_token) return;
+
+  const card = document.getElementById('page-conversations-card');
+  const container = document.getElementById('page-conversations-list');
+  const title = document.getElementById('page-conv-title');
+
+  card.style.display = 'block';
+  title.textContent = 'Hoi thoai - ' + page.name;
+  container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text-secondary);">&#x23F3; Dang tai hoi thoai...</div>';
+
+  fbGraph('/' + pageId + '/conversations', {
+    fields: 'participants,updated_time,snippet,message_count,unread_count',
+    limit: 10,
+    access_token: page.access_token
+  }).then(function(res) {
+    if (res.error) {
+      container.innerHTML = '<div style="padding:16px;color:var(--danger);font-size:13px;">Loi: ' + (res.error.message || 'Khong the tai hoi thoai') + '</div>';
+      return;
+    }
+
+    var convos = res.data || [];
+    if (convos.length === 0) {
+      container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);">Chua co hoi thoai nao.</div>';
+      return;
+    }
+
+    var html = '<table style="width:100%;"><thead><tr><th>Khach hang</th><th>Tin nhan cuoi</th><th>Chua doc</th><th>Thoi gian</th></tr></thead><tbody>';
+    convos.forEach(function(c) {
+      var participants = (c.participants && c.participants.data) ? c.participants.data : [];
+      var customer = participants.find(function(p) { return p.id !== pageId; }) || { name: 'Unknown' };
+      var timeAgo = getTimeAgo(c.updated_time);
+      var unread = c.unread_count || 0;
+
+      html += '<tr>'
+        + '<td><strong>' + customer.name + '</strong></td>'
+        + '<td style="max-width:250px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">' + (c.snippet || '') + '</td>'
+        + '<td>' + (unread > 0 ? '<span class="tag tag-danger">' + unread + '</span>' : '<span class="tag tag-success">0</span>') + '</td>'
+        + '<td style="font-size:12px;color:var(--text-secondary);">' + timeAgo + '</td>'
+        + '</tr>';
+    });
+    html += '</tbody></table>';
+    container.innerHTML = html;
+  }).catch(function(err) {
+    container.innerHTML = '<div style="padding:16px;color:var(--danger);font-size:13px;">Loi ket noi: ' + err.message + '</div>';
+  });
+}
+
+function viewPageInsights(pageId) {
+  var page = connectedPages.find(function(cp) { return cp.id === pageId; });
+  if (!page || !page.access_token) return;
+
+  fbGraph('/' + pageId + '/insights', {
+    metric: 'page_impressions,page_engaged_users,page_fans',
+    period: 'day',
+    access_token: page.access_token
+  }).then(function(res) {
+    if (res.error) {
+      alert('Loi tai insights: ' + (res.error.message || 'Unknown'));
+      return;
+    }
+
+    var msg = 'Insights cho ' + page.name + ':\n\n';
+    (res.data || []).forEach(function(metric) {
+      var vals = metric.values || [];
+      var lastVal = vals.length > 0 ? vals[vals.length - 1].value : 'N/A';
+      msg += metric.title + ': ' + lastVal + '\n';
+    });
+    alert(msg);
+  });
+}
+
+function fbLogout() {
+  fbAccessToken = null;
+  fbUserData = null;
+  fbPages = [];
+  localStorage.removeItem('hungbot_fb_token');
+  document.getElementById('fb-user-section').style.display = 'none';
+  document.getElementById('fb-login-banner').style.display = 'block';
+  document.getElementById('btn-refresh-pages').style.display = 'none';
+  document.getElementById('fb-pages-list').innerHTML = '<div class="empty-state" style="padding:30px;"><div class="empty-icon">&#x1F4C4;</div><h3>Chua co Page nao</h3><p>Dang nhap Facebook de xem danh sach Pages cua ban</p></div>';
+  document.getElementById('page-conversations-card').style.display = 'none';
+}
+
+function getTimeAgo(dateStr) {
+  const now = new Date();
+  const d = new Date(dateStr);
+  const diff = Math.floor((now - d) / 1000);
+  if (diff < 60) return diff + ' giay';
+  if (diff < 3600) return Math.floor(diff / 60) + ' phut';
+  if (diff < 86400) return Math.floor(diff / 3600) + ' gio';
+  return Math.floor(diff / 86400) + ' ngay';
+}
+
+// ==========================================
+// AI AGENT: Rules + Config + Test
+// ==========================================
+
+var agentRules = [];
+
+function loadAgentRules() {
+  fetch('/api/rules').then(function(r) { return r.json(); }).then(function(rules) {
+    agentRules = rules;
+    renderRules();
+  }).catch(function() { renderRules(); });
+}
+
+function renderRules() {
+  var el = document.getElementById('rules-list');
+  if (!el) return;
+  if (agentRules.length === 0) {
+    el.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text-secondary);">'
+      + '<div style="font-size:32px;margin-bottom:8px;">&#x1F4CB;</div>'
+      + '<p>Chua co rule nao. Bam <strong>+ Them Rule</strong> de tao.</p>'
+      + '<p style="font-size:12px;">Vi du: khach gui "gia" -> bot tra loi bang gia</p></div>';
+    return;
+  }
+  var html = '';
+  agentRules.forEach(function(rule, i) {
+    html += '<div style="border:1px solid var(--border);border-radius:var(--radius);padding:14px;background:var(--bg);">'
+      + '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">'
+      + '<div style="display:flex;align-items:center;gap:10px;">'
+      + '<div class="toggle ' + (rule.active ? 'active' : '') + '" style="width:36px;height:20px;" onclick="toggleRule(' + i + ')"></div>'
+      + '<strong>' + (rule.name || 'Rule ' + (i + 1)) + '</strong>'
+      + '<span class="tag tag-' + (rule.match === 'exact' ? 'primary' : rule.match === 'contains' ? 'success' : 'warning') + '">' + (rule.match || 'contains') + '</span>'
+      + '</div>'
+      + '<div style="display:flex;gap:6px;">'
+      + '<button class="btn btn-sm btn-secondary" onclick="editRule(' + i + ')">&#x270F; Sua</button>'
+      + '<button class="btn btn-sm btn-danger" onclick="deleteRule(' + i + ')">&#x1F5D1;</button>'
+      + '</div></div>'
+      + '<div style="font-size:13px;color:var(--text-secondary);margin-bottom:4px;">Keywords: <strong>' + (rule.keywords || []).join(', ') + '</strong></div>'
+      + '<div style="font-size:13px;background:var(--card);padding:8px 12px;border-radius:var(--radius-sm);border-left:3px solid var(--primary);">' + (rule.reply || '').substring(0, 200) + '</div>'
+      + '</div>';
+  });
+  el.innerHTML = html;
+}
+
+function addRule() {
+  var name = prompt('Ten rule (vd: Chao hoi, Bang gia, Dia chi):');
+  if (!name) return;
+  var keywords = prompt('Keywords (cach nhau boi dau phay):\nVD: xin chao, hello, hi, chao shop');
+  if (!keywords) return;
+  var match = prompt('Kieu match:\n1 = contains (chua keyword)\n2 = exact (chinh xac)\n3 = startsWith (bat dau bang)', '1');
+  var matchType = match === '2' ? 'exact' : match === '3' ? 'startsWith' : 'contains';
+  var reply = prompt('Cau tra loi tu dong:');
+  if (!reply) return;
+
+  agentRules.push({
+    name: name,
+    keywords: keywords.split(',').map(function(k) { return k.trim(); }).filter(Boolean),
+    match: matchType,
+    reply: reply,
+    active: true
+  });
+  saveRules();
+}
+
+function editRule(i) {
+  var rule = agentRules[i];
+  if (!rule) return;
+  var name = prompt('Ten rule:', rule.name);
+  if (name !== null) rule.name = name;
+  var kw = prompt('Keywords (phay cach):', (rule.keywords || []).join(', '));
+  if (kw !== null) rule.keywords = kw.split(',').map(function(k) { return k.trim(); }).filter(Boolean);
+  var match = prompt('Match: contains / exact / startsWith', rule.match || 'contains');
+  if (match !== null) rule.match = match;
+  var reply = prompt('Cau tra loi:', rule.reply);
+  if (reply !== null) rule.reply = reply;
+  saveRules();
+}
+
+function toggleRule(i) { agentRules[i].active = !agentRules[i].active; saveRules(); }
+function deleteRule(i) { if (confirm('Xoa rule "' + agentRules[i].name + '"?')) { agentRules.splice(i, 1); saveRules(); } }
+
+function saveRules() {
+  fetch('/api/rules', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(agentRules) })
+    .then(function() { renderRules(); });
+}
+
+function loadAgentConfig() {
+  fetch('/api/config').then(function(r) { return r.json(); }).then(function(cfg) {
+    if (cfg.aiEnabled) document.getElementById('ai-enabled-toggle').classList.add('active');
+    if (cfg.aiProvider) document.getElementById('ai-provider').value = cfg.aiProvider;
+    if (cfg.aiModel) document.getElementById('ai-model').value = cfg.aiModel;
+    if (cfg.aiApiKey) document.getElementById('ai-api-key').value = cfg.aiApiKey;
+    if (cfg.aiSystemPrompt) document.getElementById('ai-system-prompt').value = cfg.aiSystemPrompt;
+  }).catch(function() {});
+}
+
+function saveAgentConfig() {
+  var cfg = {
+    aiEnabled: document.getElementById('ai-enabled-toggle').classList.contains('active'),
+    aiProvider: document.getElementById('ai-provider').value,
+    aiModel: document.getElementById('ai-model').value,
+    aiApiKey: document.getElementById('ai-api-key').value,
+    aiSystemPrompt: document.getElementById('ai-system-prompt').value
+  };
+  fetch('/api/config', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cfg) })
+    .then(function() { alert('Da luu cau hinh AI!'); })
+    .catch(function() { alert('Loi khi luu!'); });
+}
+
+function testAI() {
+  var input = document.getElementById('ai-test-input');
+  var msg = input.value.trim();
+  if (!msg) return;
+  input.value = '';
+
+  var chat = document.getElementById('ai-test-chat');
+  if (chat.querySelector('div[style*="text-align:center"]')) chat.innerHTML = '';
+
+  chat.innerHTML += '<div class="msg incoming" style="max-width:85%;">' + msg + '<div class="msg-time">Test user</div></div>';
+  chat.innerHTML += '<div class="msg bot" style="max-width:85%;" id="ai-typing"><div class="bot-tag">&#x1F916; AI</div>Dang suy nghi...</div>';
+  chat.scrollTop = chat.scrollHeight;
+
+  fetch('/api/test-ai', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ message: msg }) })
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var typing = document.getElementById('ai-typing');
+      if (typing) {
+        var srcTag = data.source === 'rule' ? '<span class="tag tag-success" style="margin-left:6px;">Rule: ' + data.ruleName + '</span>'
+          : data.source === 'ai' ? '<span class="tag tag-primary" style="margin-left:6px;">AI</span>'
+          : '<span class="tag tag-warning" style="margin-left:6px;">Khong match</span>';
+        typing.innerHTML = '<div class="bot-tag">&#x1F916; Bot ' + srcTag + '</div>' + (data.reply || 'Khong co tra loi').replace(/\n/g, '<br>');
+        typing.removeAttribute('id');
+      }
+      chat.scrollTop = chat.scrollHeight;
+    })
+    .catch(function(e) {
+      var typing = document.getElementById('ai-typing');
+      if (typing) { typing.innerHTML = '<div class="bot-tag">&#x1F916;</div>Loi: ' + e.message; typing.removeAttribute('id'); }
+    });
+}
+
+// Init FB UI on page load
+initFBUI();
+
+// Init
+initDashboardCharts();
+loadAgentRules();
+loadAgentConfig();
+</script>
+</body>
+</html>

@@ -1,0 +1,12 @@
+{
+  "name": "hungbot",
+  "version": "1.0.0",
+  "description": "HungBot - AI Chatbot Marketing Platform",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

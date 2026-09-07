@@ -1,0 +1,66 @@
+[
+  {
+    "name": "Chao hoi",
+    "keywords": [
+      "xin chao",
+      "hello",
+      "hi",
+      "chao shop",
+      "chao ban",
+      "hey"
+    ],
+    "match": "contains",
+    "reply": "Chao ban! Cam on ban da nhan tin cho HMONG4S. Minh co the giup gi cho ban hom nay?",
+    "active": true
+  },
+  {
+    "name": "Hoi gia",
+    "keywords": [
+      "gia bao nhieu",
+      "bao nhieu tien",
+      "gia ca",
+      "price",
+      "bang gia"
+    ],
+    "match": "contains",
+    "reply": "Ban muon hoi gia san pham nao a? Gui hinh hoac ten san pham de minh bao gia chinh xac nhe!",
+    "active": true
+  },
+  {
+    "name": "Dia chi",
+    "keywords": [
+      "dia chi",
+      "o dau",
+      "cua hang",
+      "address",
+      "shop o dau"
+    ],
+    "match": "contains",
+    "reply": "Dia chi shop: HMONG4S GROUP\nLien he: 0xxx.xxx.xxx\nMo cua: 8h-21h hang ngay",
+    "active": true
+  },
+  {
+    "name": "Cam on",
+    "keywords": [
+      "cam on",
+      "thank",
+      "thanks"
+    ],
+    "match": "contains",
+    "reply": "Khong co gi a! Neu can gi cu nhan tin cho minh nhe. Chuc ban mot ngay vui ve!",
+    "active": true
+  },
+  {
+    "name": "Ship hang",
+    "keywords": [
+      "ship",
+      "giao hang",
+      "van chuyen",
+      "freeship",
+      "phi ship"
+    ],
+    "match": "contains",
+    "reply": "Shop ho tro FREESHIP toan quoc cho don tu 500k!\nDon duoi 500k phi ship 30k.\nGiao hang trong 2-4 ngay.",
+    "active": true
+  }
+]
