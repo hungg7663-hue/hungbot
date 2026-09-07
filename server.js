@@ -14,11 +14,11 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 var conversations = {};
 
 var FOLLOWUP_MESSAGES = [
-  "Koj nyob, koj puas tseem xav yuav yam khoom no? ❤️",
-  "Koj puas xav xaj hnub no kom kuv npaj khoom rau koj? 😊",
-  "Koj tseem muaj yam twg tsis paub meej lossis tseem txhawj xeeb txog? Nug kuv tau nhé, kuv mam li pab qhia ntxiv rau koj ❤️",
-  "Koj xav yuav 1 lossis 2 yam khoom kom kuv sau npe xaj rau koj?",
-  "Kuv tos koj qhov kev lees paub kom kuv npaj xaj khoom rau koj nha 😍 Yog koj tseem xav yuav ces qhia kuv nhé!"
+  "Koj nyob, koj puas tseem xav yuav MOB TXHA os? ❤️",
+  "Koj puas xav xaj MOB TXHA hnub no kom kuv npaj rau koj? 😊 1 lub 350k free ship xwb!",
+  "Koj tseem muaj yam twg tsis paub meej txog MOB TXHA lossis tseem txhawj xeeb txog? Nug kuv tau nhé, kuv mam li pab qhia ntxiv rau koj ❤️",
+  "Koj xav yuav 1 lossis 2 lub MOB TXHA kom kuv sau npe xaj rau koj? 2 lub 600k free ship txuag tau 100k os!",
+  "Kuv tos koj qhov kev lees paub kom kuv npaj xaj MOB TXHA rau koj nha 😍 Yog koj tseem xav yuav ces qhia kuv nhé! Hu tau: 0357.283.332"
 ];
 var FOLLOWUP_DELAYS = [10*60*1000, 10*60*1000, 10*60*1000, 10*60*1000, 10*60*1000];
 
