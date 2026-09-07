@@ -281,16 +281,22 @@ http.createServer(async function(req, res) {
     }
   }
 
-  // ======== API: Save page token ========
+  // ======== API: Save/disconnect page token ========
   if (p === '/api/page-token' && req.method === 'POST') {
     var pt = await parseBody(req);
     var c = loadJSON('config.json', {});
     if (!c.pageTokens) c.pageTokens = {};
-    c.pageTokens[pt.pageId] = pt.pageToken;
     if (!c.pageNames) c.pageNames = {};
-    c.pageNames[pt.pageId] = pt.pageName;
+    if (pt.disconnect) {
+      delete c.pageTokens[pt.pageId];
+      delete c.pageNames[pt.pageId];
+      console.log('[PAGE TOKEN] Disconnected page ' + pt.pageId);
+    } else {
+      c.pageTokens[pt.pageId] = pt.pageToken;
+      c.pageNames[pt.pageId] = pt.pageName;
+      console.log('[PAGE TOKEN] Saved for ' + pt.pageName);
+    }
     saveJSON('config.json', c);
-    console.log('[PAGE TOKEN] Saved for ' + pt.pageName);
     return json(res, { ok: true });
   }
 

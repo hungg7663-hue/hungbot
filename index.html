@@ -1455,8 +1455,8 @@ textarea.form-input { min-height: 100px; resize: vertical; }
                     <div class="fb-user-name" id="fb-user-name"></div>
                     <div class="fb-user-id" id="fb-user-id-text"></div>
                   </div>
-                  <button class="btn btn-sm btn-secondary" onclick="fbLogout()">Dang xuat FB</button>
-                  <button class="btn btn-sm btn-secondary" onclick="document.getElementById('fb-appid-setup').style.display='block'">&#x2699; App ID</button>
+                  <button class="btn btn-sm btn-primary" onclick="startFBLogin()">&#x1F504; Doi tai khoan</button>
+                  <button class="btn btn-sm btn-secondary" onclick="fbLogout()">Dang xuat</button>
                 </div>
               </div>
 
@@ -1468,8 +1468,8 @@ textarea.form-input { min-height: 100px; resize: vertical; }
                     <h3>Ket noi Facebook</h3>
                     <p>Dang nhap Facebook de quan ly Pages, nhan tin voi khach hang qua Messenger</p>
                   </div>
-                  <button class="btn-fb" onclick="fbLogin()">
-                    <span style="font-size:18px;">&#x1F512;</span> Dang nhap Facebook
+                  <button class="btn-fb" onclick="startFBLogin()">
+                    <span style="font-size:18px;">&#x1F4D8;</span> Dang nhap Facebook
                   </button>
                 </div>
               </div>
@@ -2063,12 +2063,55 @@ function showConnectedPagesFromConfig(pageNames) {
       '  <div class="ch-name">' + pageNames[pid] + '</div>' +
       '  <div class="ch-desc">Page ID: ' + pid + ' &bull; <span style="color:var(--success);font-weight:600;">&#x2705; Dang ket noi</span></div>' +
       '</div>' +
-      '<button class="btn btn-sm btn-secondary" onclick="fbLogin()">&#x1F504; Doi tai khoan</button>' +
+      '<button class="btn btn-sm btn-danger" onclick="disconnectPageFromServer(\'' + pid + '\')">Ngat ket noi</button>' +
       '</div>';
   });
   document.getElementById('connected-pages-list').innerHTML = html;
   document.getElementById('fb-pages-list').innerHTML =
-    '<div style="text-align:center;padding:20px;color:var(--text-secondary);">Da ket noi ' + pageIds.length + ' Page. Dang nhap Facebook de quan ly them.</div>';
+    '<div style="text-align:center;padding:24px;">' +
+    '  <p style="color:var(--text-secondary);margin-bottom:16px;">Dang nhap Facebook de them Page moi hoac doi tai khoan</p>' +
+    '  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
+    '    <button class="btn-fb" onclick="startFBLogin()" style="padding:10px 24px;">' +
+    '      <span style="font-size:18px;">&#x1F4D8;</span> Dang nhap Facebook' +
+    '    </button>' +
+    '    <button class="btn btn-secondary" onclick="showAppIdSetup()" style="padding:10px 16px;font-size:13px;">' +
+    '      &#x2699; Doi App ID' +
+    '    </button>' +
+    '  </div>' +
+    '</div>';
+}
+
+function startFBLogin() {
+  var appId = localStorage.getItem('hungbot_fb_app_id');
+  if (!appId) {
+    showAppIdSetup();
+    return;
+  }
+  var redirectUri = window.location.origin + window.location.pathname;
+  var url = 'https://www.facebook.com/v21.0/dialog/oauth'
+    + '?client_id=' + appId
+    + '&redirect_uri=' + encodeURIComponent(redirectUri)
+    + '&scope=' + FB_SCOPES
+    + '&response_type=token'
+    + '&auth_type=reauthorize';
+  window.location.href = url;
+}
+
+function showAppIdSetup() {
+  document.getElementById('fb-appid-setup').style.display = 'block';
+  document.getElementById('fb-app-id-input').focus();
+}
+
+function disconnectPageFromServer(pageId) {
+  if (!confirm('Ban chac chan muon ngat ket noi Page nay?')) return;
+  fetch('/api/page-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pageId: pageId, pageToken: '', pageName: '', disconnect: true })
+  }).then(function() {
+    // Reload settings
+    initFBUI();
+  }).catch(function() {});
 }
 
 function handleFBRedirect() {
