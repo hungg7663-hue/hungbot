@@ -9,6 +9,47 @@ const MIME = { '.html':'text/html','.css':'text/css','.js':'text/javascript','.j
 
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 
+// ---- "Ban duoi khach" (follow-up) state ----
+// conversations[senderId] = { pageId, pageToken, lastBotReply, followUpCount, humanTookOver, timer }
+var conversations = {};
+
+var FOLLOWUP_MESSAGES = [
+  "Koj puas tseem nyob? 😊 Yog koj xav paub ntxiv txog peb cov khoom, qhia rau peb nawb!",
+  "Nyob zoo dua! Peb tseem nyob ntawm no pab koj 🙌 Koj puas muaj lus nug txog peb cov khoom?",
+  "Peb pom tias koj tseem tsis tau teb 🤔 Yog koj xav tau kev pab, xa xov tuaj rau peb tau txhua lub sij hawm!",
+  "Koj puas xav saib peb cov khoom tshiab? 🆕 Peb muaj ntau yam zoo nqi heev hnub no!"
+];
+var FOLLOWUP_DELAYS = [3*60*1000, 10*60*1000, 30*60*1000, 2*60*60*1000];
+
+function scheduleFollowUp(senderId) {
+  var conv = conversations[senderId];
+  if (!conv || conv.humanTookOver) return;
+  if (conv.followUpCount >= FOLLOWUP_DELAYS.length) return;
+
+  var delay = FOLLOWUP_DELAYS[conv.followUpCount];
+  conv.timer = setTimeout(async function() {
+    var c = conversations[senderId];
+    if (!c || c.humanTookOver) return;
+    var msg = FOLLOWUP_MESSAGES[c.followUpCount] || FOLLOWUP_MESSAGES[FOLLOWUP_MESSAGES.length - 1];
+    try {
+      await fbSend(c.pageToken, senderId, msg);
+      appendLog({ dir: 'out', to: senderId, page: c.pageId, text: msg, src: 'followup:' + c.followUpCount, time: new Date().toISOString() });
+      console.log('[FOLLOWUP ' + c.followUpCount + '] -> ' + senderId);
+    } catch (e) { console.error('[FOLLOWUP ERROR]', e.message); }
+    c.followUpCount++;
+    c.lastBotReply = Date.now();
+    scheduleFollowUp(senderId);
+  }, delay);
+}
+
+function cancelFollowUp(senderId) {
+  var conv = conversations[senderId];
+  if (conv && conv.timer) {
+    clearTimeout(conv.timer);
+    conv.timer = null;
+  }
+}
+
 // ---- Data helpers ----
 
 function loadJSON(name, fallback) {
@@ -49,7 +90,7 @@ function matchRule(text, rules) {
 
 async function callAI(message, config) {
   if (!config.aiApiKey) return null;
-  var sys = config.aiSystemPrompt || 'Ban la tro ly ban hang. Tra loi ngan gon, than thien, chuyen nghiep.';
+  var sys = config.aiSystemPrompt || 'Koj yog ib tug neeg pab muag khoom ntawm HMONG4S. Teb ua lus Hmoob Dawb, luv luv, sib raug zoo, thiab txawj muag khoom. Yog tus neeg yuav khoom nug txog khoom, qhia tus nqi thiab txhib kom lawv xaj khoom. Yog lawv tsis teb, nug lawv ib lo lus txhib kom lawv xav yuav.';
 
   if (config.aiProvider === 'openai' || (!config.aiProvider && config.aiApiKey.startsWith('sk-'))) {
     var r = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -92,31 +133,61 @@ async function processMessage(senderId, pageId, text, pageToken) {
 
   appendLog({ dir: 'in', from: senderId, page: pageId, text: text, time: new Date().toISOString() });
 
-  var rule = matchRule(text, rules);
-  if (rule) {
-    var reply = rule.reply;
-    if (rule.replies && rule.replies.length > 0) {
-      reply = rule.replies[Math.floor(Math.random() * rule.replies.length)];
-    }
-    await fbSend(pageToken, senderId, reply);
-    appendLog({ dir: 'out', to: senderId, page: pageId, text: reply, src: 'rule:' + rule.name, time: new Date().toISOString() });
-    console.log('[RULE] ' + rule.name + ' -> ' + senderId);
+  // Customer replied -> reset follow-up timer, clear humanTookOver if customer re-engages
+  cancelFollowUp(senderId);
+  if (conversations[senderId] && conversations[senderId].humanTookOver) {
+    console.log('[HUMAN HANDOFF ACTIVE] Skipping bot reply for ' + senderId);
     return;
   }
 
-  if (config.aiEnabled && config.aiApiKey) {
+  var reply = null;
+  var src = '';
+
+  var rule = matchRule(text, rules);
+  if (rule) {
+    reply = rule.reply;
+    if (rule.replies && rule.replies.length > 0) {
+      reply = rule.replies[Math.floor(Math.random() * rule.replies.length)];
+    }
+    src = 'rule:' + rule.name;
+  } else if (config.aiEnabled && config.aiApiKey) {
     try {
-      var aiReply = await callAI(text, config);
-      if (aiReply) {
-        await fbSend(pageToken, senderId, aiReply);
-        appendLog({ dir: 'out', to: senderId, page: pageId, text: aiReply, src: 'ai', time: new Date().toISOString() });
-        console.log('[AI] -> ' + senderId);
-        return;
-      }
+      reply = await callAI(text, config);
+      src = 'ai';
     } catch (e) { console.error('[AI ERROR]', e.message); }
   }
 
-  console.log('[NO REPLY] ' + senderId + ': ' + text);
+  if (reply) {
+    await fbSend(pageToken, senderId, reply);
+    appendLog({ dir: 'out', to: senderId, page: pageId, text: reply, src: src, time: new Date().toISOString() });
+    console.log('[' + src.toUpperCase() + '] -> ' + senderId);
+
+    // Start follow-up tracking
+    conversations[senderId] = {
+      pageId: pageId,
+      pageToken: pageToken,
+      lastBotReply: Date.now(),
+      followUpCount: 0,
+      humanTookOver: false,
+      timer: null
+    };
+    scheduleFollowUp(senderId);
+  } else {
+    console.log('[NO REPLY] ' + senderId + ': ' + text);
+  }
+}
+
+// ---- Detect human employee reply (echo message from Page) ----
+
+function handleEcho(senderId, pageId) {
+  // When a human employee sends a message via Page, Facebook sends an echo event
+  // with sender.id = pageId. We mark the conversation as human-handled.
+  // senderId here is the RECIPIENT (customer), detected from the echo event.
+  if (conversations[senderId]) {
+    cancelFollowUp(senderId);
+    conversations[senderId].humanTookOver = true;
+    console.log('[HUMAN TAKEOVER] Employee replied to ' + senderId + ' — bot paused');
+  }
 }
 
 // ---- HTTP helpers ----
@@ -163,7 +234,19 @@ http.createServer(async function(req, res) {
         var pageId = entry.id;
         var pageToken = (config.pageTokens || {})[pageId];
         (entry.messaging || []).forEach(function(evt) {
-          if (evt.message && evt.message.text && pageToken) {
+          if (!pageToken) return;
+
+          // Detect echo = human employee replied from Page
+          if (evt.message && evt.message.is_echo) {
+            var recipientId = evt.recipient && evt.recipient.id;
+            if (recipientId && recipientId !== pageId) {
+              handleEcho(recipientId, pageId);
+            }
+            return;
+          }
+
+          // Normal customer message
+          if (evt.message && evt.message.text) {
             processMessage(evt.sender.id, pageId, evt.message.text, pageToken);
           }
         });
@@ -210,7 +293,7 @@ http.createServer(async function(req, res) {
     return json(res, { ok: true });
   }
 
-  // ======== API: Send message ========
+  // ======== API: Send message (manual = human employee) ========
   if (p === '/api/send' && req.method === 'POST') {
     var s = await parseBody(req);
     var cfg2 = loadJSON('config.json', {});
@@ -218,7 +301,38 @@ http.createServer(async function(req, res) {
     if (!tok) return json(res, { error: 'No page token' }, 400);
     var result = await fbSend(tok, s.recipientId, s.message);
     appendLog({ dir: 'out', to: s.recipientId, page: s.pageId, text: s.message, src: 'manual', time: new Date().toISOString() });
+    // Manual send = human employee took over
+    if (conversations[s.recipientId]) {
+      cancelFollowUp(s.recipientId);
+      conversations[s.recipientId].humanTookOver = true;
+      console.log('[HUMAN TAKEOVER] Manual send to ' + s.recipientId + ' — bot paused');
+    }
     return json(res, result);
+  }
+
+  // ======== API: Resume bot for a conversation ========
+  if (p === '/api/resume-bot' && req.method === 'POST') {
+    var rb = await parseBody(req);
+    if (conversations[rb.senderId]) {
+      conversations[rb.senderId].humanTookOver = false;
+      conversations[rb.senderId].followUpCount = 0;
+      console.log('[BOT RESUMED] for ' + rb.senderId);
+    }
+    return json(res, { ok: true });
+  }
+
+  // ======== API: Conversation states ========
+  if (p === '/api/conversations' && req.method === 'GET') {
+    var states = {};
+    for (var sid in conversations) {
+      states[sid] = {
+        pageId: conversations[sid].pageId,
+        humanTookOver: conversations[sid].humanTookOver,
+        followUpCount: conversations[sid].followUpCount,
+        lastBotReply: conversations[sid].lastBotReply
+      };
+    }
+    return json(res, states);
   }
 
   // ======== API: Test AI / Rules ========
@@ -235,10 +349,10 @@ http.createServer(async function(req, res) {
     if (cfg3.aiEnabled && cfg3.aiApiKey) {
       try {
         var aiR = await callAI(t.message, cfg3);
-        return json(res, { source: 'ai', reply: aiR || 'AI khong tra loi duoc.' });
-      } catch (e) { return json(res, { source: 'error', reply: 'Loi AI: ' + e.message }, 500); }
+        return json(res, { source: 'ai', reply: aiR || 'AI tsis teb tau.' });
+      } catch (e) { return json(res, { source: 'error', reply: 'Yuam kev AI: ' + e.message }, 500); }
     }
-    return json(res, { source: 'none', reply: 'Khong co rule match. AI chua cau hinh.' });
+    return json(res, { source: 'none', reply: 'Tsis muaj rule match. AI tsis tau teeb tsa.' });
   }
 
   // ======== API: Message log ========

@@ -2,65 +2,72 @@
   {
     "name": "Chao hoi",
     "keywords": [
-      "xin chao",
-      "hello",
-      "hi",
-      "chao shop",
-      "chao ban",
-      "hey"
+      "nyob zoo", "hello", "hi", "hey", "xin chao", "chao shop", "chao ban",
+      "koj puas nyob", "puas yog", "sawv ntxov zoo", "hmo ntuj zoo"
     ],
     "match": "contains",
-    "reply": "Chao ban! Cam on ban da nhan tin cho HMONG4S. Minh co the giup gi cho ban hom nay?",
+    "reply": "Nyob zoo! Ua tsaug koj xa xov tuaj rau HMONG4S 🙏\nKoj xav paub txog yam khoom twg? Qhia rau peb es peb pab tau koj!",
+    "replies": [
+      "Nyob zoo! Ua tsaug koj xa xov tuaj rau HMONG4S 🙏\nKoj xav paub txog yam khoom twg? Qhia rau peb es peb pab tau koj!",
+      "Nyob zoo os! Zoo siab koj tuaj saib peb lub khw 😊\nHnub no koj xav yuav dabtsi? Peb muaj ntau yam zoo heev!",
+      "Nyob zoo! Txais tos tuaj rau HMONG4S ✨\nKoj xav nug txog dabtsi? Peb pab tau koj tam sim no!"
+    ],
     "active": true
   },
   {
     "name": "Hoi gia",
     "keywords": [
-      "gia bao nhieu",
-      "bao nhieu tien",
-      "gia ca",
-      "price",
-      "bang gia"
+      "nqi", "pes tsawg", "tus nqi", "nqe", "price", "gia bao nhieu", "bao nhieu tien",
+      "kim tsawg", "pheej hmoo", "raug nqi"
     ],
     "match": "contains",
-    "reply": "Ban muon hoi gia san pham nao a? Gui hinh hoac ten san pham de minh bao gia chinh xac nhe!",
+    "reply": "Koj xav paub tus nqi ntawm yam khoom twg? 🏷️\nXa duab lossis lub npe khoom tuaj es peb mam qhia tus nqi rau koj!",
+    "replies": [
+      "Koj xav paub tus nqi ntawm yam khoom twg? 🏷️\nXa duab lossis lub npe khoom tuaj es peb mam qhia tus nqi rau koj!",
+      "Peb muaj ntau yam nqi zoo heev! 💰\nQhia rau peb koj nyiam yam twg, peb mam xa tus nqi rau koj."
+    ],
     "active": true
   },
   {
     "name": "Dia chi",
     "keywords": [
-      "dia chi",
-      "o dau",
-      "cua hang",
-      "address",
-      "shop o dau"
+      "chaw nyob", "nyob qhov twg", "address", "dia chi", "o dau", "shop nyob",
+      "qhov twg", "tuaj li cas"
     ],
     "match": "contains",
-    "reply": "Dia chi shop: HMONG4S GROUP\nLien he: 0xxx.xxx.xxx\nMo cua: 8h-21h hang ngay",
+    "reply": "Chaw nyob: HMONG4S GROUP 📍\nHu xov tooj: 0xxx.xxx.xxx\nQhib txhua hnub: 8h - 21h\n\nTxais tos koj tuaj saib!",
     "active": true
   },
   {
     "name": "Cam on",
     "keywords": [
-      "cam on",
-      "thank",
-      "thanks"
+      "ua tsaug", "cam on", "thank", "thanks", "zoo kawg", "zoo heev"
     ],
     "match": "contains",
-    "reply": "Khong co gi a! Neu can gi cu nhan tin cho minh nhe. Chuc ban mot ngay vui ve!",
+    "reply": "Tsis ua li cas os! 😊 Yog koj xav tau dabtsi ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
+    "replies": [
+      "Tsis ua li cas os! 😊 Yog koj xav tau dabtsi ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
+      "Zoo siab pab tau koj! 🙏 Yog muaj lus nug ntxiv ces hu tuaj rau peb tau txhua lub sij hawm."
+    ],
     "active": true
   },
   {
     "name": "Ship hang",
     "keywords": [
-      "ship",
-      "giao hang",
-      "van chuyen",
-      "freeship",
-      "phi ship"
+      "ship", "xa khoom", "nqi xa", "giao hang", "van chuyen", "freeship",
+      "xa mus", "pab xa", "pes ntev"
     ],
     "match": "contains",
-    "reply": "Shop ho tro FREESHIP toan quoc cho don tu 500k!\nDon duoi 500k phi ship 30k.\nGiao hang trong 2-4 ngay.",
+    "reply": "Peb pab xa khoom DAWB thoob teb chaws rau cov order txij 500k! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.",
+    "active": true
+  },
+  {
+    "name": "Xav yuav",
+    "keywords": [
+      "xav yuav", "order", "xaj", "yuav", "mua", "dat hang", "muab rau kuv"
+    ],
+    "match": "contains",
+    "reply": "Zoo kawg! Koj xav yuav yam twg? 🛒\nXa duab lossis lub npe khoom tuaj, peb mam pab koj xaj tam sim no!",
     "active": true
   }
 ]
