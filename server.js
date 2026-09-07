@@ -24,18 +24,22 @@ function appendLog(entry) {
 
 // ---- Rule matching ----
 
+function removeDiacritics(str) {
+  return str.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D');
+}
+
 function matchRule(text, rules) {
-  var msg = text.toLowerCase().trim();
+  var msg = removeDiacritics(text.toLowerCase().trim());
   for (var i = 0; i < rules.length; i++) {
     var r = rules[i];
     if (!r.active) continue;
     var keywords = r.keywords || [];
     for (var k = 0; k < keywords.length; k++) {
-      var kw = keywords[k].toLowerCase();
+      var kw = removeDiacritics(keywords[k].toLowerCase());
       if (r.match === 'exact' && msg === kw) return r;
       if (r.match === 'contains' && msg.indexOf(kw) !== -1) return r;
       if (r.match === 'startsWith' && msg.indexOf(kw) === 0) return r;
-      if (r.match === 'regex') { try { if (new RegExp(keywords[k], 'i').test(msg)) return r; } catch {} }
+      if (r.match === 'regex') { try { if (new RegExp(keywords[k], 'i').test(text)) return r; } catch {} }
     }
   }
   return null;
