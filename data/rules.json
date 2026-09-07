@@ -1,12 +1,12 @@
 [
   {
-    "name": "Hoi chuc nang / cong dung",
+    "name": "Hoi chuc nang MOB TXHA",
     "keywords": [
-      "pab", "zoo dab tsi", "zoo li cas",
-      "ua tau dab tsi", "muaj txiaj ntsig dab tsi", "chuc nang"
+      "pab dab tsi", "pab tau zoo dab tsi", "pab tau dab tsi", "zoo dab tsi",
+      "ua tau dab tsi", "muaj txiaj ntsig", "chuc nang", "mob txha pab"
     ],
     "match": "contains",
-    "reply": "MOB TXHA yog ib yam khoom pab saib xyuas pob txha thiab pob qij txha, pab:\n\n✅ Pab txo qhov mob nkees thiab qhov tsis xis nyob ntawm pob txha thiab pob qij txha.\n✅ Pab kom cov pob qij txha txav tau yooj yim thiab xis nyob dua.\n✅ Pab saib xyuas pob txha thiab pob qij txha rau cov neeg ua hauj lwm hnyav lossis siv zog ntau.\n✅ Haum rau cov neeg uas nquag muaj mob nkees lossis txhav pob qij txha.\n\nYog koj xav paub tus nqi thiab txoj kev siv, kuv yuav pab qhia kom meej rau koj nhé.",
+    "reply": "MOB TXHA yog yam khoom pab saib xyuas pob txha thiab pob qij txha, pab kom txav tau yooj yim thiab xis nyob dua ❤️",
     "active": true
   },
   {
@@ -16,17 +16,17 @@
       "mob hauv caug", "mob nraub qaum", "mob caj dab"
     ],
     "match": "contains",
-    "reply": "MOB TXHA yog ib yam khoom pab saib xyuas pob txha thiab pob qij txha, pab:\n\n✅ Pab txo qhov mob nkees thiab qhov tsis xis nyob ntawm pob txha thiab pob qij txha.\n✅ Pab kom cov pob qij txha txav tau yooj yim thiab xis nyob dua.\n✅ Pab saib xyuas pob txha thiab pob qij txha rau cov neeg ua hauj lwm hnyav lossis siv zog ntau.\n✅ Haum rau cov neeg uas nquag muaj mob nkees lossis txhav pob qij txha.\n\n🔹 1 lub: 350k free ship\n🔹 2 lub: 600k free ship\n🔹 Sib 5 lub: 1.250.000đ free ship\n\nYog koj xav paub tus nqi thiab txoj kev siv, kuv yuav pab qhia kom meej rau koj nhé ❤️",
+    "reply": "MOB TXHA yog ib yam khoom pab saib xyuas pob txha thiab pob qij txha, pab:\n\n✅ Pab txo qhov mob nkees thiab qhov tsis xis nyob ntawm pob txha thiab pob qij txha.\n✅ Pab kom cov pob qij txha txav tau yooj yim thiab xis nyob dua.\n✅ Pab saib xyuas pob txha thiab pob qij txha rau cov neeg ua hauj lwm hnyav lossis siv zog ntau.\n✅ Haum rau cov neeg uas nquag muaj mob nkees lossis txhav pob qij txha.\n\nYog koj xav paub tus nqi thiab txoj kev siv, kuv yuav pab qhia kom meej rau koj nhé.",
     "active": true
   },
   {
     "name": "Hoi cach siv",
     "keywords": [
       "siv li cas", "txoj kev siv", "siv zoo li cas", "noj li cas",
-      "haus li cas", "siv ntau npaum cas"
+      "haus li cas", "siv ntau npaum cas", "yuav siv li cas"
     ],
     "match": "contains",
-    "reply": "Ua ntej, kuv xav nug tias koj tab tom muaj teeb meem dab tsi ạ? Kom kuv thiaj pab qhia txoj kev siv MOB TXHA kom meej dua rau koj ❤️",
+    "reply": "Koj siv raws li daim ntawv qhia ntawm yam khoom nhé. Yog koj xav paub meej, kuv pab qhia rau koj ❤️",
     "active": true
   },
   {
@@ -36,25 +36,17 @@
       "ib lub nqi", "1 lub nqi"
     ],
     "match": "contains",
-    "reply": "Ua ntej, kuv xav nug tias koj tab tom muaj teeb meem dab tsi ạ? Kom kuv thiaj pab qhia thiab tư vấn kom meej dua rau koj ❤️",
+    "reply": "Ib lub yog 350k nyiaj nhé ❤️",
     "active": true
   },
   {
-    "name": "Yuav 1 lub",
+    "name": "Hoi gia 2 lub",
     "keywords": [
-      "yuav 1", "1 xwb", "ib yam", "ib xwb", "ib lub xwb"
+      "ob lub li cas", "2 lub li cas", "ob lub pes tsawg", "2 lub pes tsawg",
+      "yuav 2", "2 lub", "ob lub"
     ],
     "match": "contains",
-    "reply": "Tau kawg ❤️ 1 lub MOB TXHA yog 350k free ship!\nKoj xa koj tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé!",
-    "active": true
-  },
-  {
-    "name": "Yuav 2 lub",
-    "keywords": [
-      "yuav 2", "2 lub", "ob lub", "yog yuav 2"
-    ],
-    "match": "contains",
-    "reply": "Yog yuav 2 lub MOB TXHA yog 600k free ship nhé ❤️ Txuag tau 100k luôn!\nKoj xa xov tooj thiab chaw nyob rau kuv, kuv mam xaj rau koj!",
+    "reply": "Ob lub yog 600k nyiaj nhé ❤️",
     "active": true
   },
   {
@@ -68,13 +60,42 @@
     "active": true
   },
   {
-    "name": "Hoi phi xa khoom",
+    "name": "Yuav 1 lub",
     "keywords": [
-      "nqe xa", "phi xa", "xa khoom puas suav", "suav nrog", "nqi xa puas",
-      "puas free ship"
+      "yuav 1", "1 xwb", "ib yam", "ib xwb", "ib lub xwb"
     ],
     "match": "contains",
-    "reply": "Free ship luôn nhé ❤️ Peb xa MOB TXHA DAWB thoob teb chaws os!",
+    "reply": "Tau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.",
+    "active": true
+  },
+  {
+    "name": "Xac nhan muon mua",
+    "keywords": [
+      "xav yuav", "kuv yuav", "kuv xav yuav", "xaj", "order",
+      "mua", "dat hang", "muab rau kuv"
+    ],
+    "match": "contains",
+    "reply": "Tau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.",
+    "active": true
+  },
+  {
+    "name": "Hoi phi xa khoom",
+    "keywords": [
+      "nqe xa", "phi xa", "nqi xa khoom", "puas muaj nqi xa",
+      "puas free ship", "xa khoom puas suav", "suav nrog"
+    ],
+    "match": "contains",
+    "reply": "Muaj nhé, nqi xa khoom yog 30k nyiaj ❤️ Yog order txij 500k ces free ship os!",
+    "active": true
+  },
+  {
+    "name": "Hoi bao lau nhan hang",
+    "keywords": [
+      "thaum twg", "pes ntev", "pes tsawg hnub", "bao lau", "bao gio",
+      "tau txais", "tau khoom"
+    ],
+    "match": "contains",
+    "reply": "Kwv yees li 2-4 hnub ces koj yuav tau txais khoom nhé ❤️",
     "active": true
   },
   {
@@ -88,23 +109,60 @@
     "active": true
   },
   {
-    "name": "Xac nhan muon mua",
+    "name": "Can suy nghi / phan van",
     "keywords": [
-      "tseem xav yuav", "xav yuav", "kuv yuav", "xaj", "order",
-      "mua", "dat hang", "muab rau kuv"
+      "xav ntxiv", "cia kuv xav", "saib ua ntej", "cia kuv saib", "tsis tau txiav txim",
+      "maj mam", "cia tag kis", "xav tsis tau", "xav ua ntej"
     ],
     "match": "contains",
-    "reply": "Yog mas ❤️ Koj xa koj tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj MOB TXHA rau koj tam sim no nhé!",
+    "reply": "Tau kawg ạ ❤️ Koj maj mam xav. Yog muaj lus nug dab tsi ces nug kuv tau nhé.",
     "active": true
   },
   {
-    "name": "Can suy nghi them",
+    "name": "Tu choi / tsis yuav",
     "keywords": [
-      "xav ntxiv", "cia kuv xav", "saib ua ntej", "cia kuv saib", "tsis tau txiav txim",
-      "maj mam", "cia tag kis", "xav tsis tau"
+      "tsis yuav", "tsis xav yuav", "tsis xav", "tsis tau", "tsis muaj nyiaj",
+      "kim heev", "nqi kim", "lauj", "tsis xav tau"
     ],
     "match": "contains",
-    "reply": "Tau kawg ạ, koj maj mam saib thiab xav kom zoo ❤️ Thaum koj xav tau ces xa lus rau kuv, kuv yuav pab koj tam sim ntawd nha!",
+    "reply": "Tau kawg ạ ❤️ Tsis ua li cas. Thaum twg koj xav tau ces xa lus rau kuv tau nhé.",
+    "active": true
+  },
+  {
+    "name": "Tsis xav mua",
+    "keywords": [
+      "kuv tsis xav yuav", "tsis xav mua", "tsis yuav lawm"
+    ],
+    "match": "contains",
+    "reply": "Tau kawg ạ ❤️ Tsis ua li cas. Yog muaj lus nug dab tsi ntxiv ces koj nug kuv tau nhé.",
+    "active": true
+  },
+  {
+    "name": "Hoi puas muaj tseeb",
+    "keywords": [
+      "puas muaj tseeb", "muaj tseeb", "puas tseeb"
+    ],
+    "match": "contains",
+    "reply": "Yog ạ ❤️ Cov ntaub ntawv kuv qhia rau koj yog raws li cov ntaub ntawv ntawm yam khoom. Yog xav paub ntxiv, kuv pab qhia kom meej rau koj nhé.",
+    "active": true
+  },
+  {
+    "name": "Hoi puas ntseeg tau / uy tin",
+    "keywords": [
+      "puas ntseeg tau", "ntseeg tau", "uy tin", "puas uy tin"
+    ],
+    "match": "contains",
+    "reply": "Yog ạ ❤️ Peb muab cov ntaub ntawv khoom qhia kom meej rau koj. Koj xav paub dab tsi ntxiv ces nug kuv tau nhé.",
+    "active": true
+  },
+  {
+    "name": "Hoi puas guaranteed / dam bao",
+    "keywords": [
+      "guaranteed", "puas guaranteed", "dam bao", "puas dam bao",
+      "puas lav tau", "lav tau"
+    ],
+    "match": "contains",
+    "reply": "Yam khoom tsis tuaj yeem lav tau 100% rau txhua tus neeg ạ. Koj qhia kuv txog qhov koj xav tau, kuv yuav pab qhia cov ntaub ntawv kom meej rau koj nhé.",
     "active": true
   },
   {
@@ -152,27 +210,7 @@
       "xa mus", "pes ntev"
     ],
     "match": "contains",
-    "reply": "Peb xa MOB TXHA DAWB thoob teb chaws os! 🚚\nXa li 2-4 hnub txog.\nKoj puas xav xaj hnub no?",
-    "active": true
-  },
-  {
-    "name": "Tu choi / khong mua",
-    "keywords": [
-      "tsis yuav", "tsis xav", "tsis tau", "tsis muaj nyiaj", "kim heev",
-      "nqi kim", "lauj", "tsis xav tau"
-    ],
-    "match": "contains",
-    "reply": "Tau kawg os, tsis ua li cas ❤️ Yog hnub twg koj xav tau lossis muaj lus nug txog MOB TXHA ces xa xov tuaj rau kuv tau txhua lub sij hawm nawb!\nHu tau: 0357.283.332",
-    "active": true
-  },
-  {
-    "name": "Hoi uy tin / puas muaj tseeb",
-    "keywords": [
-      "puas muaj tseeb", "puas ntseeg tau", "puas guaranteed", "lam gia",
-      "puas zoo tiag", "uy tin", "scam", "dag"
-    ],
-    "match": "contains",
-    "reply": "Peb yog HMONG4S GROUP — Hà Nội, muag khoom muaj ntawv pov thawj thiab ntseeg tau os ❤️\nPeb muaj ntau tus neeg siv lawm thiab lawv zoo siab heev!\nYog koj tseem txhawj ces hu rau peb: 0357.283.332 — peb mam li qhia ntxiv rau koj.",
+    "reply": "Peb xa MOB TXHA DAWB thoob teb chaws rau order txij 500k os! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.",
     "active": true
   },
   {
