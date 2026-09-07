@@ -2018,7 +2018,6 @@ function initFBUI() {
     document.getElementById('fb-app-id-input').value = appId;
   }
 
-  // Check if returning from Facebook OAuth redirect
   handleFBRedirect();
 
   var saved = localStorage.getItem('hungbot_connected_pages');
@@ -2027,7 +2026,6 @@ function initFBUI() {
     if (connectedPages.length > 0) renderConnectedPages();
   }
 
-  // If we have a token, show connected state
   if (fbAccessToken) {
     document.getElementById('fb-appid-setup').style.display = 'none';
     document.getElementById('fb-connect-section').style.display = 'block';
@@ -2035,7 +2033,42 @@ function initFBUI() {
   } else if (appId) {
     document.getElementById('fb-appid-setup').style.display = 'none';
     document.getElementById('fb-connect-section').style.display = 'block';
+  } else {
+    // Auto-load connected pages from server config
+    fetch('/api/config').then(function(r) { return r.json(); }).then(function(cfg) {
+      if (cfg.fbAppId) {
+        localStorage.setItem('hungbot_fb_app_id', cfg.fbAppId);
+        document.getElementById('fb-app-id-input').value = cfg.fbAppId;
+      }
+      if (cfg.pageNames && Object.keys(cfg.pageNames).length > 0) {
+        showConnectedPagesFromConfig(cfg.pageNames);
+      }
+    }).catch(function() {});
   }
+}
+
+function showConnectedPagesFromConfig(pageNames) {
+  var pageIds = Object.keys(pageNames);
+  if (pageIds.length === 0) return;
+  document.getElementById('fb-connect-section').style.display = 'block';
+  document.getElementById('fb-appid-setup').style.display = 'none';
+  document.getElementById('fb-login-banner').style.display = 'none';
+  var card = document.getElementById('connected-pages-card');
+  card.style.display = 'block';
+  var html = '';
+  pageIds.forEach(function(pid) {
+    html += '<div class="channel-card" style="border-color:var(--success);">' +
+      '<div class="ch-icon" style="background:rgba(24,119,242,0.1);color:#1877F2;font-size:24px;">&#x1F4D8;</div>' +
+      '<div class="ch-info">' +
+      '  <div class="ch-name">' + pageNames[pid] + '</div>' +
+      '  <div class="ch-desc">Page ID: ' + pid + ' &bull; <span style="color:var(--success);font-weight:600;">&#x2705; Dang ket noi</span></div>' +
+      '</div>' +
+      '<button class="btn btn-sm btn-secondary" onclick="fbLogin()">&#x1F504; Doi tai khoan</button>' +
+      '</div>';
+  });
+  document.getElementById('connected-pages-list').innerHTML = html;
+  document.getElementById('fb-pages-list').innerHTML =
+    '<div style="text-align:center;padding:20px;color:var(--text-secondary);">Da ket noi ' + pageIds.length + ' Page. Dang nhap Facebook de quan ly them.</div>';
 }
 
 function handleFBRedirect() {
