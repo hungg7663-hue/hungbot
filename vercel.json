@@ -1,0 +1,6 @@
+{
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://hungbot-production.up.railway.app/api/:path*" },
+    { "source": "/webhook", "destination": "https://hungbot-production.up.railway.app/webhook" }
+  ]
+}
