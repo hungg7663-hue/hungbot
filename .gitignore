@@ -3,3 +3,5 @@ data/config.json
 data/messages.jsonl
 certs/
 .env
+
+.vercel

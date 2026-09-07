@@ -7,10 +7,10 @@
 <meta name="theme-color" content="#6C5CE7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="HungBot">
+<meta name="apple-mobile-web-app-title" content="HMONGX ChatBot">
 <link rel="manifest" href="/manifest.json">
 <link rel="apple-touch-icon" href="/icon.svg">
-<title>HungBot — AI Chatbot Marketing Platform</title>
+<title>HMONGX ChatBot — AI Chatbot Marketing Platform</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
 // Facebook OAuth — no SDK needed, works on HTTP localhost
@@ -530,7 +530,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
   <div class="sidebar-logo">
     <div class="logo-icon">H</div>
     <div>
-      <h1>HungBot</h1>
+      <h1>HMONGX ChatBot</h1>
       <span>AI Marketing Platform</span>
     </div>
   </div>
@@ -1414,7 +1414,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
                 <div class="step-num">1</div>
                 <div class="step-content">
                   <div class="step-title">Tao Facebook App</div>
-                  <div class="step-desc">Vao developers.facebook.com > My Apps > Create App > Chon "Business" > Dat ten app (vd: HungBot)</div>
+                  <div class="step-desc">Vao developers.facebook.com > My Apps > Create App > Chon "Business" > Dat ten app (vd: HMONGX ChatBot)</div>
                 </div>
               </div>
               <div class="setup-step">
@@ -1445,56 +1445,67 @@ textarea.form-input { min-height: 100px; resize: vertical; }
               </div>
             </div>
 
-            <!-- Facebook Connect Banner (shown after App ID saved) -->
+            <!-- Facebook Connect Section -->
             <div id="fb-connect-section" style="display:none;">
-              <!-- User info when logged in -->
+
+              <!-- User info when logged in via OAuth -->
               <div id="fb-user-section" style="display:none;">
-                <div class="fb-user-info" id="fb-user-row">
-                  <img id="fb-user-pic" src="" alt="">
-                  <div style="flex:1;">
-                    <div class="fb-user-name" id="fb-user-name"></div>
-                    <div class="fb-user-id" id="fb-user-id-text"></div>
+                <div class="card">
+                  <div class="fb-user-info" id="fb-user-row">
+                    <img id="fb-user-pic" src="" alt="" style="width:48px;height:48px;border-radius:50%;">
+                    <div style="flex:1;">
+                      <div class="fb-user-name" id="fb-user-name" style="font-weight:700;font-size:15px;"></div>
+                      <div class="fb-user-id" id="fb-user-id-text" style="font-size:12px;color:var(--text-secondary);"></div>
+                    </div>
                   </div>
-                  <button class="btn btn-sm btn-primary" onclick="startFBLogin()">&#x1F504; Doi tai khoan</button>
-                  <button class="btn btn-sm btn-secondary" onclick="fbLogout()">Dang xuat</button>
+                  <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="switchFBAccount()" style="flex:1;min-width:140px;">&#x1F504; Doi tai khoan FB khac</button>
+                    <button class="btn btn-secondary" onclick="fbLogout()" style="flex:1;min-width:100px;">Dang xuat</button>
+                  </div>
                 </div>
               </div>
 
               <!-- Login banner when not logged in -->
               <div id="fb-login-banner">
-                <div class="fb-connect-banner">
-                  <div class="fb-logo">&#x1F4D8;</div>
-                  <div class="fb-text">
-                    <h3>Ket noi Facebook</h3>
-                    <p>Dang nhap Facebook de quan ly Pages, nhan tin voi khach hang qua Messenger</p>
-                  </div>
-                  <button class="btn-fb" onclick="startFBLogin()">
-                    <span style="font-size:18px;">&#x1F4D8;</span> Dang nhap Facebook
+                <div class="card" style="text-align:center;padding:30px 20px;">
+                  <div style="font-size:48px;margin-bottom:12px;">&#x1F4D8;</div>
+                  <h3 style="margin-bottom:8px;">Ket noi Facebook</h3>
+                  <p style="color:var(--text-secondary);margin-bottom:20px;font-size:13px;">Dang nhap Facebook de quan ly Pages va nhan tin voi khach hang</p>
+                  <button class="btn-fb" onclick="startFBLogin()" style="padding:12px 32px;font-size:15px;margin:0 auto;">
+                    &#x1F4D8; Dang nhap Facebook
                   </button>
                 </div>
               </div>
 
-              <!-- Connected Pages -->
-              <div class="card">
+              <!-- Pages from OAuth -->
+              <div class="card" id="fb-pages-card" style="display:none;">
                 <div class="card-header">
-                  <div class="card-title">Facebook Pages</div>
+                  <div class="card-title">Chon Page de ket noi</div>
                   <button class="btn btn-sm btn-primary" onclick="fbRefreshPages()" id="btn-refresh-pages" style="display:none;">&#x1F504; Lam moi</button>
                 </div>
-                <div id="fb-pages-list">
-                  <div class="empty-state" style="padding:30px;">
-                    <div class="empty-icon">&#x1F4C4;</div>
-                    <h3>Chua co Page nao</h3>
-                    <p>Dang nhap Facebook de xem danh sach Pages cua ban</p>
-                  </div>
-                </div>
+                <div id="fb-pages-list"></div>
               </div>
 
               <!-- Connected Pages that are active -->
               <div class="card" id="connected-pages-card" style="display:none;">
                 <div class="card-header">
-                  <div class="card-title">&#x2705; Pages dang hoat dong</div>
+                  <div class="card-title">&#x2705; Page dang hoat dong</div>
                 </div>
                 <div id="connected-pages-list"></div>
+              </div>
+
+              <!-- Quick actions for connected page -->
+              <div id="fb-quick-actions" style="display:none;">
+                <div class="card" style="padding:16px;">
+                  <div style="display:flex;gap:10px;flex-wrap:wrap;">
+                    <button class="btn btn-primary" onclick="switchFBAccount()" style="flex:1;min-width:180px;padding:12px;">
+                      &#x1F504; Doi tai khoan Facebook khac
+                    </button>
+                    <button class="btn btn-secondary" onclick="addMorePages()" style="flex:1;min-width:140px;padding:12px;">
+                      &#x2795; Them Page
+                    </button>
+                  </div>
+                </div>
               </div>
 
               <!-- Page conversations preview -->
@@ -2072,32 +2083,48 @@ function showConnectedPagesFromConfig(pageNames) {
   document.getElementById('fb-connect-section').style.display = 'block';
   document.getElementById('fb-appid-setup').style.display = 'none';
   document.getElementById('fb-login-banner').style.display = 'none';
+
   var card = document.getElementById('connected-pages-card');
   card.style.display = 'block';
   var html = '';
   pageIds.forEach(function(pid) {
-    html += '<div class="channel-card" style="border-color:var(--success);">' +
-      '<div class="ch-icon" style="background:rgba(24,119,242,0.1);color:#1877F2;font-size:24px;">&#x1F4D8;</div>' +
-      '<div class="ch-info">' +
-      '  <div class="ch-name">' + pageNames[pid] + '</div>' +
-      '  <div class="ch-desc">Page ID: ' + pid + ' &bull; <span style="color:var(--success);font-weight:600;">&#x2705; Dang ket noi</span></div>' +
+    html += '<div class="channel-card" style="border-color:var(--success);padding:16px;">' +
+      '<div class="ch-icon" style="background:rgba(24,119,242,0.1);color:#1877F2;font-size:28px;">&#x1F4D8;</div>' +
+      '<div class="ch-info" style="flex:1;">' +
+      '  <div class="ch-name" style="font-size:16px;font-weight:700;">' + pageNames[pid] + '</div>' +
+      '  <div class="ch-desc" style="margin-top:4px;">Page ID: ' + pid + '</div>' +
+      '  <div style="margin-top:6px;"><span style="color:var(--success);font-weight:600;font-size:13px;">&#x2705; Dang ket noi &bull; Bot dang hoat dong</span></div>' +
       '</div>' +
-      '<button class="btn btn-sm btn-danger" onclick="disconnectPageFromServer(\'' + pid + '\')">Ngat ket noi</button>' +
+      '<button class="btn btn-sm btn-danger" onclick="disconnectPageFromServer(\'' + pid + '\')" style="align-self:flex-start;">Ngat</button>' +
       '</div>';
   });
   document.getElementById('connected-pages-list').innerHTML = html;
-  document.getElementById('fb-pages-list').innerHTML =
-    '<div style="text-align:center;padding:24px;">' +
-    '  <p style="color:var(--text-secondary);margin-bottom:16px;">Dang nhap Facebook de them Page moi hoac doi tai khoan</p>' +
-    '  <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">' +
-    '    <button class="btn-fb" onclick="startFBLogin()" style="padding:10px 24px;">' +
-    '      <span style="font-size:18px;">&#x1F4D8;</span> Dang nhap Facebook' +
-    '    </button>' +
-    '    <button class="btn btn-secondary" onclick="showAppIdSetup()" style="padding:10px 16px;font-size:13px;">' +
-    '      &#x2699; Doi App ID' +
-    '    </button>' +
-    '  </div>' +
-    '</div>';
+
+  // Show quick action buttons
+  document.getElementById('fb-quick-actions').style.display = 'block';
+}
+
+function switchFBAccount() {
+  var appId = localStorage.getItem('hungbot_fb_app_id');
+  if (!appId) {
+    showAppIdSetup();
+    return;
+  }
+  // Clear current token so user can login fresh
+  fbAccessToken = null;
+  localStorage.removeItem('hungbot_fb_token');
+  var redirectUri = window.location.origin + window.location.pathname;
+  var url = 'https://www.facebook.com/v21.0/dialog/oauth'
+    + '?client_id=' + appId
+    + '&redirect_uri=' + encodeURIComponent(redirectUri)
+    + '&scope=' + FB_SCOPES
+    + '&response_type=token'
+    + '&auth_type=reauthorize';
+  window.location.href = url;
+}
+
+function addMorePages() {
+  startFBLogin();
 }
 
 function startFBLogin() {
@@ -2111,8 +2138,7 @@ function startFBLogin() {
     + '?client_id=' + appId
     + '&redirect_uri=' + encodeURIComponent(redirectUri)
     + '&scope=' + FB_SCOPES
-    + '&response_type=token'
-    + '&auth_type=reauthorize';
+    + '&response_type=token';
   window.location.href = url;
 }
 
@@ -2122,13 +2148,12 @@ function showAppIdSetup() {
 }
 
 function disconnectPageFromServer(pageId) {
-  if (!confirm('Ban chac chan muon ngat ket noi Page nay?')) return;
+  if (!confirm('Ngat ket noi Page nay? Bot se ngung tu dong tra loi cho Page nay.')) return;
   fetch('/api/page-token', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ pageId: pageId, pageToken: '', pageName: '', disconnect: true })
   }).then(function() {
-    // Reload settings
     initFBUI();
   }).catch(function() {});
 }
@@ -2172,6 +2197,9 @@ function onFBConnected() {
 
   document.getElementById('fb-login-banner').style.display = 'none';
   document.getElementById('fb-user-section').style.display = 'block';
+  document.getElementById('fb-quick-actions').style.display = 'none';
+  var pagesCard = document.getElementById('fb-pages-card');
+  if (pagesCard) pagesCard.style.display = 'block';
   document.getElementById('btn-refresh-pages').style.display = 'inline-flex';
 
   fbGraph('/me', { fields: 'id,name,picture.width(100)', access_token: fbAccessToken })
