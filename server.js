@@ -5,7 +5,7 @@ const crypto = require('crypto');
 
 const PORT = process.env.PORT || 3700;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'hungbot_verify_2024';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || process.env.HmongxChatbot || 'hmong4s2024';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hmong4s2024';
 const FB_APP_SECRET = process.env.FB_APP_SECRET || '';
 const PAGE_ID = process.env.PAGE_ID || '';
 const PAGE_TOKEN = process.env.PAGE_TOKEN || '';
