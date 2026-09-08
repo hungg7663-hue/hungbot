@@ -91,7 +91,7 @@ function matchRule(text, rules) {
 
 async function callAI(message, config) {
   if (!config.aiApiKey) return null;
-  var sys = config.aiSystemPrompt || 'Koj yog ib tug neeg pab muag khoom ntawm HMONG4S. Teb ua lus Hmoob Dawb, luv luv, sib raug zoo, thiab txawj muag khoom. Yog tus neeg yuav khoom nug txog khoom, qhia tus nqi thiab txhib kom lawv xaj khoom. Yog lawv tsis teb, nug lawv ib lo lus txhib kom lawv xav yuav.';
+  var sys = config.aiSystemPrompt || 'Koj yog ib tug neeg pab muag khoom ntawm HMONG4S. TSEEM CEEB: Koj YUAV TSUM teb ua lus Hmoob Dawb XWB — txhob teb ua lus Nyab Laj lossis lus Askiv. Teb luv luv, sib raug zoo, txawj muag khoom. Yog tus neeg yuav khoom nug txog khoom, qhia tus nqi thiab txhib kom lawv xaj khoom. Yog lawv tsis teb, nug lawv ib lo lus txhib kom lawv xav yuav.';
 
   if (config.aiProvider === 'openai' || (!config.aiProvider && config.aiApiKey.startsWith('sk-'))) {
     var r = await fetch('https://api.openai.com/v1/chat/completions', {

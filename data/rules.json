@@ -7,7 +7,7 @@
       "công dụng", "tác dụng", "có tác dụng gì", "dùng để làm gì"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nMOB TXHA yog yam khoom pab saib xyuas pob txha thiab pob qij txha, pab kom txav tau yooj yim thiab xis nyob dua ❤️\n\n🇻🇳 Tiếng Việt:\nMOB TXHA là sản phẩm hỗ trợ chăm sóc xương khớp, giúp vận động linh hoạt và thoải mái hơn ❤️",
+    "reply": "MOB TXHA yog yam khoom pab saib xyuas pob txha thiab pob qij txha, pab kom txav tau yooj yim thiab xis nyob dua ❤️",
     "active": true
   },
   {
@@ -18,7 +18,7 @@
       "xương khớp", "đau khớp", "đau xương", "đau lưng", "đau cổ", "đau đầu gối", "thoái hóa"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nMOB TXHA yog ib yam khoom pab saib xyuas pob txha thiab pob qij txha, pab:\n\n✅ Pab txo qhov mob nkees thiab qhov tsis xis nyob ntawm pob txha thiab pob qij txha.\n✅ Pab kom cov pob qij txha txav tau yooj yim thiab xis nyob dua.\n✅ Pab saib xyuas pob txha thiab pob qij txha rau cov neeg ua hauj lwm hnyav lossis siv zog ntau.\n✅ Haum rau cov neeg uas nquag muaj mob nkees lossis txhav pob qij txha.\n\n🇻🇳 Tiếng Việt:\nMOB TXHA là sản phẩm hỗ trợ chăm sóc xương khớp, giúp:\n\n✅ Giảm đau nhức và khó chịu ở xương khớp.\n✅ Giúp khớp vận động linh hoạt và thoải mái hơn.\n✅ Hỗ trợ chăm sóc xương khớp cho người lao động nặng.\n✅ Phù hợp cho người hay bị đau nhức hoặc cứng khớp.\n\nYog koj xav paub tus nqi — Nếu bạn muốn biết giá, nhắn mình nhé ❤️",
+    "reply": "MOB TXHA yog ib yam khoom pab saib xyuas pob txha thiab pob qij txha, pab:\n\n✅ Pab txo qhov mob nkees thiab qhov tsis xis nyob ntawm pob txha thiab pob qij txha.\n✅ Pab kom cov pob qij txha txav tau yooj yim thiab xis nyob dua.\n✅ Pab saib xyuas pob txha thiab pob qij txha rau cov neeg ua hauj lwm hnyav lossis siv zog ntau.\n✅ Haum rau cov neeg uas nquag muaj mob nkees lossis txhav pob qij txha.\n\nKoj xav paub tus nqi ces nug kuv tau nhé ❤️",
     "active": true
   },
   {
@@ -29,7 +29,7 @@
       "cách dùng", "cách sử dụng", "dùng như thế nào", "uống thế nào", "liều dùng"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nKoj siv raws li daim ntawv qhia ntawm yam khoom nhé. Yog koj xav paub meej, kuv pab qhia rau koj ❤️\n\n🇻🇳 Tiếng Việt:\nBạn dùng theo hướng dẫn trên sản phẩm nhé. Nếu muốn biết chi tiết, mình hướng dẫn cho bạn ❤️",
+    "reply": "Koj siv raws li daim ntawv qhia ntawm yam khoom nhé. Yog koj xav paub meej, kuv pab qhia rau koj ❤️",
     "active": true
   },
   {
@@ -40,7 +40,7 @@
       "1 hộp bao nhiêu", "một hộp giá", "1 hộp giá"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nIb lub yog 350k nyiaj nhé ❤️\n\n🇻🇳 Tiếng Việt:\nMột hộp giá 350k nhé ❤️",
+    "reply": "Ib lub yog 350k nyiaj nhé ❤️",
     "active": true
   },
   {
@@ -51,7 +51,7 @@
       "2 hộp bao nhiêu", "hai hộp giá", "2 hộp giá"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nOb lub yog 600k nyiaj nhé ❤️\n\n🇻🇳 Tiếng Việt:\nHai hộp giá 600k nhé ❤️",
+    "reply": "Ob lub yog 600k nyiaj nhé ❤️",
     "active": true
   },
   {
@@ -62,7 +62,7 @@
       "mua sỉ", "5 hộp", "năm hộp", "giá sỉ", "mua số lượng"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nNqi sib: 5 lub MOB TXHA yog 1.250.000đ free ship ❤️ Txuag tau ntau heev!\nKoj xa xov tooj thiab chaw nyob rau kuv, kuv mam xaj rau koj tam sim no!\n\n🇻🇳 Tiếng Việt:\nGiá sỉ: 5 hộp MOB TXHA chỉ 1.250.000đ miễn phí ship ❤️ Tiết kiệm cực nhiều!\nBạn gửi số điện thoại và địa chỉ, mình đặt hàng ngay cho bạn!",
+    "reply": "Nqi sib: 5 lub MOB TXHA yog 1.250.000đ free ship ❤️ Txuag tau ntau heev!\nKoj xa xov tooj thiab chaw nyob rau kuv, kuv mam xaj rau koj tam sim no!",
     "active": true
   },
   {
@@ -72,7 +72,7 @@
       "mua 1", "lấy 1", "một hộp thôi"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.\n\n🇻🇳 Tiếng Việt:\nĐược luôn ❤️ Bạn gửi tên, số điện thoại và địa chỉ, mình đặt hàng cho bạn nhé.",
+    "reply": "Tau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.",
     "active": true
   },
   {
@@ -83,7 +83,7 @@
       "đặt hàng", "muốn mua", "mình mua", "lấy cho mình"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.\n\n🇻🇳 Tiếng Việt:\nĐược luôn ❤️ Bạn gửi tên, số điện thoại và địa chỉ, mình đặt hàng cho bạn nhé.",
+    "reply": "Tau kawg ❤️ Koj xa koj lub npe, tus xov tooj thiab chaw nyob rau kuv, kuv mam li sau npe xaj rau koj nhé.",
     "active": true
   },
   {
@@ -94,7 +94,7 @@
       "phí ship", "phí vận chuyển", "có freeship không", "ship bao nhiêu"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nMuaj nhé, nqi xa khoom yog 30k nyiaj ❤️ Yog order txij 500k ces free ship os!\n\n🇻🇳 Tiếng Việt:\nCó nhé, phí ship là 30k ❤️ Đơn từ 500k được miễn phí ship!",
+    "reply": "Muaj nhé, nqi xa khoom yog 30k nyiaj ❤️ Yog order txij 500k ces free ship os!",
     "active": true
   },
   {
@@ -105,7 +105,7 @@
       "bao lâu", "mấy ngày", "khi nào nhận", "giao bao lâu"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nKwv yees li 2-4 hnub ces koj yuav tau txais khoom nhé ❤️\n\n🇻🇳 Tiếng Việt:\nKhoảng 2-4 ngày bạn sẽ nhận được hàng nhé ❤️",
+    "reply": "Kwv yees li 2-4 hnub ces koj yuav tau txais khoom nhé ❤️",
     "active": true
   },
   {
@@ -116,7 +116,7 @@
       "giá bao nhiêu", "bao nhiêu tiền", "giá cả"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nMOB TXHA nqi zoo heev os ❤️\n🔹 1 lub: 350k — free ship\n🔹 2 lub: 600k — free ship (txuag 100k)\n🔹 Sib 5 lub: 1.250.000đ — free ship\nKoj xav yuav pes tsawg lub os?\n\n🇻🇳 Tiếng Việt:\nMOB TXHA giá rất tốt ❤️\n🔹 1 hộp: 350k — free ship\n🔹 2 hộp: 600k — free ship (tiết kiệm 100k)\n🔹 Sỉ 5 hộp: 1.250.000đ — free ship\nBạn muốn lấy bao nhiêu hộp?",
+    "reply": "MOB TXHA nqi zoo heev os ❤️\n🔹 1 lub: 350k — free ship\n🔹 2 lub: 600k — free ship (txuag 100k)\n🔹 Sib 5 lub: 1.250.000đ — free ship\nKoj xav yuav pes tsawg lub os?",
     "active": true
   },
   {
@@ -127,7 +127,7 @@
       "suy nghĩ thêm", "để mình xem", "xem đã", "tính sau"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTau kawg ❤️ Koj maj mam xav. Yog muaj lus nug dab tsi ces nug kuv tau nhé.\n\n🇻🇳 Tiếng Việt:\nĐược luôn ❤️ Bạn cứ suy nghĩ thêm. Có gì cứ nhắn mình nhé.",
+    "reply": "Tau kawg ❤️ Koj maj mam xav. Yog muaj lus nug dab tsi ces nug kuv tau nhé.",
     "active": true
   },
   {
@@ -138,7 +138,7 @@
       "không mua", "không cần", "đắt quá", "không có tiền"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTau kawg ❤️ Tsis ua li cas. Thaum twg koj xav tau ces xa lus rau kuv tau nhé.\n\n🇻🇳 Tiếng Việt:\nĐược ạ ❤️ Không sao đâu. Khi nào cần cứ nhắn mình nhé.",
+    "reply": "Tau kawg ❤️ Tsis ua li cas. Thaum twg koj xav tau ces xa lus rau kuv tau nhé.",
     "active": true
   },
   {
@@ -148,7 +148,7 @@
       "thôi không mua", "không lấy nữa"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTau kawg ❤️ Tsis ua li cas. Yog muaj lus nug dab tsi ntxiv ces koj nug kuv tau nhé.\n\n🇻🇳 Tiếng Việt:\nĐược ạ ❤️ Không sao. Có gì thắc mắc cứ nhắn mình nhé.",
+    "reply": "Tau kawg ❤️ Tsis ua li cas. Yog muaj lus nug dab tsi ntxiv ces koj nug kuv tau nhé.",
     "active": true
   },
   {
@@ -158,7 +158,7 @@
       "có thật không", "thật không", "hàng thật"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nYog ❤️ Cov ntaub ntawv kuv qhia rau koj yog raws li cov ntaub ntawv ntawm yam khoom. Yog xav paub ntxiv, kuv pab qhia kom meej rau koj nhé.\n\n🇻🇳 Tiếng Việt:\nCó ạ ❤️ Thông tin mình cung cấp đều dựa trên thông tin sản phẩm. Muốn biết thêm, mình giải thích chi tiết cho bạn nhé.",
+    "reply": "Yog ❤️ Cov ntaub ntawv kuv qhia rau koj yog raws li cov ntaub ntawv ntawm yam khoom. Yog xav paub ntxiv, kuv pab qhia kom meej rau koj nhé.",
     "active": true
   },
   {
@@ -168,7 +168,7 @@
       "có uy tín không", "tin được không", "shop uy tín"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nYog ❤️ Peb muab cov ntaub ntawv khoom qhia kom meej rau koj. Koj xav paub dab tsi ntxiv ces nug kuv tau nhé.\n\n🇻🇳 Tiếng Việt:\nCó ạ ❤️ Mình cung cấp thông tin sản phẩm đầy đủ cho bạn. Muốn biết thêm gì cứ hỏi mình nhé.",
+    "reply": "Yog ❤️ Peb muab cov ntaub ntawv khoom qhia kom meej rau koj. Koj xav paub dab tsi ntxiv ces nug kuv tau nhé.",
     "active": true
   },
   {
@@ -179,7 +179,7 @@
       "đảm bảo", "cam kết", "bảo đảm", "có hiệu quả không"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nYam khoom tsis tuaj yeem lav tau 100% rau txhua tus neeg. Koj qhia kuv txog qhov koj xav tau, kuv yuav pab qhia cov ntaub ntawv kom meej rau koj nhé.\n\n🇻🇳 Tiếng Việt:\nSản phẩm không thể cam kết 100% cho tất cả mọi người. Bạn cho mình biết tình trạng của bạn, mình sẽ tư vấn chi tiết nhé.",
+    "reply": "Yam khoom tsis tuaj yeem lav tau 100% rau txhua tus neeg. Koj qhia kuv txog qhov koj xav tau, kuv yuav pab qhia cov ntaub ntawv kom meej rau koj nhé.",
     "active": true
   },
   {
@@ -190,7 +190,7 @@
       "có hợp không", "phù hợp không", "dùng được không", "lo lắng"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nYog mas, koj qhia koj qhov teeb meem rau kuv, kuv mam li pab tư vấn MOB TXHA uas haum rau koj nhé ❤️\n\n🇻🇳 Tiếng Việt:\nBạn cho mình biết tình trạng của bạn, mình sẽ tư vấn MOB TXHA phù hợp cho bạn nhé ❤️",
+    "reply": "Yog mas, koj qhia koj qhov teeb meem rau kuv, kuv mam li pab tư vấn MOB TXHA uas haum rau koj nhé ❤️",
     "active": true
   },
   {
@@ -199,7 +199,7 @@
       "0\\d{9,10}"
     ],
     "match": "regex",
-    "reply": "🇭🇲 Hmoob:\nUa tsaug os ❤️ Kuv tau txais koj cov ntaub ntawv lawm. Kuv mam li npaj xaj MOB TXHA rau koj tam sim no! Tos kuv me ntsis nhé 😊\n\n🇻🇳 Tiếng Việt:\nCảm ơn bạn ❤️ Mình đã nhận thông tin. Mình sẽ chuẩn bị đặt hàng MOB TXHA cho bạn ngay! Đợi mình chút nhé 😊",
+    "reply": "Ua tsaug os ❤️ Kuv tau txais koj cov ntaub ntawv lawm. Kuv mam li npaj xaj MOB TXHA rau koj tam sim no! Tos kuv me ntsis nhé 😊",
     "active": true
   },
   {
@@ -210,7 +210,7 @@
       "địa chỉ", "ở đâu", "shop ở đâu", "cửa hàng ở đâu"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nChaw nyob: HMONG4S GROUP — Hà Nội 📍\nHu xov tooj: 0357.283.332\nQhib txhua hnub: 8h - 21h\nTxais tos koj tuaj saib os!\n\n🇻🇳 Tiếng Việt:\nĐịa chỉ: HMONG4S GROUP — Hà Nội 📍\nHotline: 0357.283.332\nMở cửa hàng ngày: 8h - 21h\nChào đón bạn ghé thăm!",
+    "reply": "Chaw nyob: HMONG4S GROUP — Hà Nội 📍\nHu xov tooj: 0357.283.332\nQhib txhua hnub: 8h - 21h\nTxais tos koj tuaj saib os!",
     "active": true
   },
   {
@@ -220,7 +220,7 @@
       "cảm ơn", "cám ơn"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nTsis ua li cas os! 😊 Yog koj xav tau MOB TXHA ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!\n\n🇻🇳 Tiếng Việt:\nKhông có gì ạ! 😊 Nếu cần thêm MOB TXHA cứ nhắn mình.\nChúc bạn một ngày tốt lành!",
+    "reply": "Tsis ua li cas os! 😊 Yog koj xav tau MOB TXHA ntxiv ces xa xov tuaj rau peb.\nThov kom koj muaj ib hnub zoo!",
     "active": true
   },
   {
@@ -231,7 +231,7 @@
       "giao hàng", "vận chuyển", "ship hàng"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nPeb xa MOB TXHA DAWB thoob teb chaws rau order txij 500k os! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.\n\n🇻🇳 Tiếng Việt:\nMiễn phí ship toàn quốc cho đơn từ 500k! 🚚\nĐơn dưới 500k phí ship 30k.\nGiao hàng trong 2-4 ngày.",
+    "reply": "Peb xa MOB TXHA DAWB thoob teb chaws rau order txij 500k os! 🚚\nCov order qis dua 500k nqi xa 30k.\nXa li 2-4 hnub txog.",
     "active": true
   },
   {
@@ -240,14 +240,14 @@
       "nyob zoo", "hello", "hi", "xin chao", "xin chào", "chào"
     ],
     "match": "contains",
-    "reply": "🇭🇲 Hmoob:\nNyob zoo os! Txais tos tuaj rau HMONG4S ✨\nKoj xav nug txog dabtsi? Peb pab tau koj tam sim no!\n\n🇻🇳 Tiếng Việt:\nXin chào! Chào mừng bạn đến với HMONG4S ✨\nBạn muốn hỏi về gì? Mình hỗ trợ ngay cho bạn!",
+    "reply": "Nyob zoo os! Txais tos tuaj rau HMONG4S ✨\nKoj xav nug txog dabtsi? Peb pab tau koj tam sim no!",
     "active": true
   },
   {
     "name": "Catch all",
     "keywords": [".*"],
     "match": "regex",
-    "reply": "🇭🇲 Hmoob:\nNyob zoo os ❤️ Peb muaj MOB TXHA — pab saib xyuas pob txha thiab pob qij txha, txo qhov mob nkees, pab kom txav tau yooj yim dua!\n\n🔹 1 lub: 350k free ship\n🔹 2 lub: 600k free ship\n🔹 Sib 5 lub: 1.250.000đ free ship\n\nKoj xav paub ntxiv los? Peb pab tau koj tam sim no!\n\n🇻🇳 Tiếng Việt:\nXin chào ❤️ Chúng mình có MOB TXHA — hỗ trợ chăm sóc xương khớp, giảm đau nhức, giúp vận động linh hoạt hơn!\n\n🔹 1 hộp: 350k free ship\n🔹 2 hộp: 600k free ship\n🔹 Sỉ 5 hộp: 1.250.000đ free ship\n\nBạn muốn tìm hiểu thêm không? Mình hỗ trợ ngay!",
+    "reply": "Nyob zoo os ❤️ Peb muaj MOB TXHA — pab saib xyuas pob txha thiab pob qij txha, txo qhov mob nkees, pab kom txav tau yooj yim dua!\n\n🔹 1 lub: 350k free ship\n🔹 2 lub: 600k free ship\n🔹 Sib 5 lub: 1.250.000đ free ship\n\nKoj xav paub ntxiv los? Peb pab tau koj tam sim no!",
     "active": true
   }
 ]
