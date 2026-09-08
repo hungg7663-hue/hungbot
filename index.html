@@ -1529,7 +1529,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
                 <div class="step-num">3</div>
                 <div class="step-content">
                   <div class="step-title">Cau hinh domain</div>
-                  <div class="step-desc">Facebook Login > Settings > Valid OAuth Redirect URIs: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">https://hungbot.vercel.app</code><br>App Domains: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">hungbot.vercel.app</code></div>
+                  <div class="step-desc">Facebook Login > Settings > Valid OAuth Redirect URIs: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">https://hungbot-production.up.railway.app</code><br>App Domains: them <code style="background:var(--bg);padding:2px 6px;border-radius:4px;">hungbot.vercel.app</code></div>
                 </div>
               </div>
               <div class="setup-step" style="border-bottom:none;">
@@ -1576,6 +1576,21 @@ textarea.form-input { min-height: 100px; resize: vertical; }
                     &#x1F4D8; Dang nhap Facebook
                   </button>
                 </div>
+              </div>
+
+              <!-- Manual Page Token Input -->
+              <div class="card" style="margin-top:16px;">
+                <div class="card-header">
+                  <div class="card-title">Ntxiv Page Token manually</div>
+                </div>
+                <p style="color:var(--text-secondary);font-size:13px;margin-bottom:12px;">Yog OAuth tsis tau, ntaus Page ID thiab Page Token ncaj qha:</p>
+                <div style="display:flex;flex-direction:column;gap:10px;">
+                  <input type="text" id="manual-page-id" placeholder="Page ID (vd: 1215773964958597)" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);">
+                  <input type="text" id="manual-page-name" placeholder="Page Name (vd: Giang A Hung Media)" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);">
+                  <input type="text" id="manual-page-token" placeholder="Page Access Token (paste token ntev ntawm no)" style="padding:10px 12px;border:1px solid var(--border);border-radius:8px;font-size:14px;background:var(--bg);color:var(--text);">
+                  <button class="btn btn-primary" onclick="saveManualToken()" style="padding:10px;">Txuag Page Token</button>
+                </div>
+                <div id="manual-token-status" style="margin-top:8px;font-size:13px;display:none;"></div>
               </div>
 
               <!-- Pages from OAuth -->
@@ -2255,6 +2270,41 @@ function switchFBAccount() {
 
 function addMorePages() {
   startFBLogin();
+}
+
+function saveManualToken() {
+  var pageId = document.getElementById('manual-page-id').value.trim();
+  var pageName = document.getElementById('manual-page-name').value.trim() || 'Page ' + pageId;
+  var pageToken = document.getElementById('manual-page-token').value.trim();
+  var status = document.getElementById('manual-token-status');
+  if (!pageId || !pageToken) {
+    status.style.display = 'block';
+    status.style.color = '#e74c3c';
+    status.textContent = 'Thov sau Page ID thiab Page Token!';
+    return;
+  }
+  fetch('/api/page-token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ pageId: pageId, pageToken: pageToken, pageName: pageName })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.ok) {
+      status.style.display = 'block';
+      status.style.color = '#27ae60';
+      status.textContent = 'Txuag tau zoo! Page "' + pageName + '" txuas lawm. Bot yuav teb tau tam sim no!';
+      document.getElementById('manual-page-id').value = '';
+      document.getElementById('manual-page-name').value = '';
+      document.getElementById('manual-page-token').value = '';
+    } else {
+      status.style.display = 'block';
+      status.style.color = '#e74c3c';
+      status.textContent = 'Yuam kev: ' + (d.error || 'Unknown error');
+    }
+  }).catch(function(e) {
+    status.style.display = 'block';
+    status.style.color = '#e74c3c';
+    status.textContent = 'Tsis tau: ' + e.message;
+  });
 }
 
 function startFBLogin() {
