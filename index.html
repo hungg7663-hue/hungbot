@@ -506,6 +506,10 @@ textarea.form-input { min-height: 100px; resize: vertical; }
 .setup-step .step-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; }
 .setup-step .step-desc { font-size: 13px; color: var(--text-secondary); line-height: 1.5; }
 
+/* Mobile nav (hidden by default, shown via media query) */
+.mobile-nav { display: none; }
+.chat-back-btn { display: none !important; }
+
 /* Hamburger & mobile overlay */
 .hamburger {
   display: none; background: none; border: none; font-size: 24px;
@@ -529,13 +533,84 @@ textarea.form-input { min-height: 100px; resize: vertical; }
   }
   .sidebar.open { left: 0; }
   .sidebar.open ~ .sidebar-overlay { display: block; }
-  .stat-grid { grid-template-columns: 1fr; }
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .stat-card { padding: 14px; }
+  .stat-card .stat-value { font-size: 22px; }
+  .stat-card .stat-icon { width: 36px; height: 36px; font-size: 16px; }
   .grid-2, .grid-3 { grid-template-columns: 1fr; }
   .agent-grid { grid-template-columns: 1fr; }
   .broadcast-grid { grid-template-columns: 1fr; }
-  .topbar { padding: 0 12px; }
-  .content { padding: 12px; }
+  .analytics-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .topbar { padding: 0 12px; height: 52px; }
+  .topbar-left h2 { font-size: 15px; }
+  .content { padding: 12px; padding-bottom: 72px; }
   .search-box { display: none; }
+
+  /* Live Chat mobile — stacked views */
+  .chat-layout { flex-direction: column; height: calc(100vh - 52px); margin: -12px; }
+  .chat-list { width: 100%; min-width: unset; max-height: 100%; }
+  .chat-list.chat-hidden { display: none; }
+  .chat-main { display: none; }
+  .chat-main.chat-visible { display: flex; }
+  .chat-main-header { padding: 10px 12px; }
+  .chat-messages { padding: 12px; }
+  .chat-input-area { padding: 10px 12px; }
+  .chat-sidebar { display: none !important; }
+  .msg { max-width: 85%; }
+  .chat-back-btn { display: inline-flex !important; }
+
+  /* Contacts table scroll */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table-wrap table { min-width: 700px; }
+  .contacts-header { flex-direction: column; gap: 10px; align-items: flex-start; }
+  .filter-row { overflow-x: auto; flex-wrap: nowrap; padding-bottom: 4px; }
+
+  /* Flow builder */
+  .flow-toolbar { flex-wrap: wrap; gap: 8px; margin: -12px -12px 12px; padding: 10px 12px; }
+  .flow-canvas { min-height: 400px; overflow: auto; }
+
+  /* Settings */
+  .settings-layout { grid-template-columns: 1fr; gap: 12px; }
+  .settings-nav { display: flex; overflow-x: auto; gap: 4px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  .settings-nav-item { white-space: nowrap; padding: 8px 12px; font-size: 13px; }
+
+  /* Growth Tools */
+  .tools-grid { grid-template-columns: 1fr !important; }
+
+  /* Modal */
+  .modal { width: 95%; padding: 16px; }
+
+  /* Bottom nav bar */
+  .mobile-nav {
+    display: flex !important; position: fixed; bottom: 0; left: 0; right: 0;
+    background: var(--bg-card); border-top: 1px solid var(--border);
+    z-index: 150; height: 60px; align-items: center; justify-content: space-around;
+    box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
+    padding-bottom: env(safe-area-inset-bottom, 0);
+  }
+  .mobile-nav-item {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 10px; color: var(--text-secondary); cursor: pointer;
+    padding: 4px 8px; border-radius: 8px; transition: var(--transition);
+    text-decoration: none; border: none; background: none;
+  }
+  .mobile-nav-item .mnav-icon { font-size: 20px; line-height: 1; }
+  .mobile-nav-item.active { color: var(--primary); }
+  .mobile-nav-item.active .mnav-icon { transform: scale(1.1); }
+}
+
+@media (max-width: 480px) {
+  .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+  .stat-card { padding: 10px; }
+  .stat-card .stat-value { font-size: 18px; }
+  .stat-card .stat-label { font-size: 10px; }
+  .stat-card .stat-change { font-size: 10px; }
+  .analytics-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+  .topbar-left h2 { font-size: 14px; }
+  .topbar-btn { width: 32px; height: 32px; font-size: 14px; }
+  .broadcast-card .bc-stats { grid-template-columns: repeat(2,1fr); }
+  .page-card { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .page-status { align-self: flex-end; }
 }
 </style>
 </head>
@@ -793,6 +868,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
         <div class="chat-main">
           <div class="chat-main-header">
             <div class="user-row">
+              <button class="chat-back-btn" onclick="chatGoBack()" style="display:none;background:none;border:none;font-size:20px;cursor:pointer;padding:4px 8px 4px 0;color:var(--text);">&#x2190;</button>
               <div class="avatar" style="width:36px;height:36px;font-size:13px;background:var(--primary-light);color:var(--primary-dark);">NA</div>
               <div>
                 <strong style="font-size:14px;">Nguyen Van An</strong>
@@ -1847,7 +1923,12 @@ function showPage(page) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   document.getElementById('page-' + page).classList.add('active');
   document.getElementById('page-title').textContent = pageTitles[page] || page;
-  event.currentTarget.classList.add('active');
+  if (typeof event !== 'undefined' && event && event.currentTarget) {
+    event.currentTarget.classList.add('active');
+  } else {
+    var navEl = document.querySelector('.nav-item[onclick*="' + page + '"]');
+    if (navEl) navEl.classList.add('active');
+  }
 
   if (page === 'dashboard') initDashboardCharts();
   if (page === 'analytics') initAnalyticsCharts();
@@ -3008,6 +3089,81 @@ function applyLang() {
 if (currentLang !== 'vi') {
   setTimeout(function() { applyLang(); }, 100);
 }
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mobile-nav" style="display:none;">
+  <button class="mobile-nav-item active" onclick="mobileNav('dashboard',this)">
+    <span class="mnav-icon">&#x1F4CA;</span>Dashboard
+  </button>
+  <button class="mobile-nav-item" onclick="mobileNav('livechat',this)">
+    <span class="mnav-icon">&#x1F4AC;</span>Chat
+  </button>
+  <button class="mobile-nav-item" onclick="mobileNav('flows',this)">
+    <span class="mnav-icon">&#x26A1;</span>Auto
+  </button>
+  <button class="mobile-nav-item" onclick="mobileNav('contacts',this)">
+    <span class="mnav-icon">&#x1F465;</span>Contacts
+  </button>
+  <button class="mobile-nav-item" onclick="mobileNav('settings',this)">
+    <span class="mnav-icon">&#x2699;</span>Settings
+  </button>
+</nav>
+
+<script>
+function mobileNav(page, el) {
+  showPage(page);
+  document.querySelectorAll('.mobile-nav-item').forEach(function(btn) {
+    btn.classList.remove('active');
+  });
+  if (el) el.classList.add('active');
+  var navMap = { dashboard: 0, livechat: 1, flows: 2, contacts: 3, settings: 4 };
+  var idx = navMap[page];
+  if (idx !== undefined && !el) {
+    var items = document.querySelectorAll('.mobile-nav-item');
+    if (items[idx]) items[idx].classList.add('active');
+  }
+}
+
+// Chat back button for mobile
+function chatGoBack() {
+  var chatList = document.querySelector('.chat-list');
+  var chatMain = document.querySelector('.chat-main');
+  if (chatList && chatMain) {
+    chatList.classList.remove('chat-hidden');
+    chatMain.classList.remove('chat-visible');
+  }
+}
+
+// Override chat item click to show chat main on mobile
+var origOpenChat = typeof openChat === 'function' ? openChat : null;
+var _origChatItemClick = document.querySelectorAll('.chat-item');
+
+document.addEventListener('click', function(e) {
+  var item = e.target.closest('.chat-item');
+  if (!item) return;
+  if (window.innerWidth <= 768) {
+    var chatList = document.querySelector('.chat-list');
+    var chatMain = document.querySelector('.chat-main');
+    if (chatList && chatMain) {
+      chatList.classList.add('chat-hidden');
+      chatMain.classList.add('chat-visible');
+    }
+  }
+});
+
+// Sync mobile nav with sidebar nav
+var _origShowPage = showPage;
+showPage = function(page) {
+  _origShowPage(page);
+  var navMap = { dashboard: 0, livechat: 1, flows: 2, contacts: 3, settings: 4 };
+  var idx = navMap[page];
+  if (idx !== undefined) {
+    document.querySelectorAll('.mobile-nav-item').forEach(function(btn, i) {
+      btn.classList.toggle('active', i === idx);
+    });
+  }
+};
 </script>
 </body>
 </html>
