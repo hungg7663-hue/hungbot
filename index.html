@@ -2194,8 +2194,9 @@ function handleFBRedirect() {
   if (params.access_token) {
     fbAccessToken = params.access_token;
     localStorage.setItem('hungbot_fb_token', fbAccessToken);
-    // Clean URL
     history.replaceState(null, '', window.location.pathname);
+    // Auto switch to Settings so user sees reconnection result
+    setTimeout(function() { if (typeof showPage === 'function') showPage('settings'); }, 500);
   }
 }
 
@@ -2266,10 +2267,44 @@ function fbRefreshPages() {
     }
     fbPages = res.data || [];
     renderFBPages();
+    autoReconnectPages();
   }).catch(function(err) {
     document.getElementById('fb-pages-list').innerHTML =
       '<div style="padding:16px;color:var(--danger);font-size:13px;">Loi ket noi: ' + err.message + '</div>';
   });
+}
+
+function autoReconnectPages() {
+  if (!fbPages.length || !connectedPages.length) return;
+  var updated = false;
+  connectedPages.forEach(function(cp) {
+    var fresh = fbPages.find(function(p) { return p.id === cp.id; });
+    if (fresh && fresh.access_token) {
+      cp.access_token = fresh.access_token;
+      updated = true;
+      fetch('/api/page-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ pageId: cp.id, pageToken: fresh.access_token, pageName: cp.name })
+      }).then(function() {
+        console.log('[AUTO-RECONNECT] Token saved for ' + cp.name);
+      }).catch(function() {});
+      fetch('https://graph.facebook.com/v19.0/' + cp.id + '/subscribed_apps', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          subscribed_fields: 'messages,messaging_postbacks,feed',
+          access_token: fresh.access_token
+        })
+      }).then(function(r) { return r.json(); })
+        .then(function(res) { console.log('[AUTO-RECONNECT] Webhook subscribed for ' + cp.name + ':', res); })
+        .catch(function() {});
+    }
+  });
+  if (updated) {
+    localStorage.setItem('hungbot_connected_pages', JSON.stringify(connectedPages));
+    console.log('[AUTO-RECONNECT] All connected pages refreshed');
+  }
 }
 
 function renderFBPages() {
