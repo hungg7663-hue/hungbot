@@ -664,11 +664,11 @@ textarea.form-input { min-height: 100px; resize: vertical; }
       </div>
     </div>
   </div>
-  <div class="sidebar-footer">
+  <div class="sidebar-footer" style="cursor:pointer;" onclick="logout()" title="Tawm">
     <div class="avatar">H</div>
     <div class="user-info">
       <div class="user-name">Giang A Hung</div>
-      <div class="user-plan">Pro Plan</div>
+      <div class="user-plan" style="display:flex;align-items:center;gap:4px;">Pro Plan · <span style="color:var(--danger);font-size:11px;">&#x2B05; Tawm</span></div>
     </div>
   </div>
 </nav>
@@ -796,11 +796,13 @@ textarea.form-input { min-height: 100px; resize: vertical; }
             </div>
           </div>
           <div class="chat-list-tabs">
-            <div class="chat-tab active">Tat ca (12)</div>
-            <div class="chat-tab">Chua doc (5)</div>
-            <div class="chat-tab">Bot (3)</div>
+            <div class="chat-tab active" onclick="switchChatTab('real',this)">Lus tiag</div>
+            <div class="chat-tab" onclick="switchChatTab('demo',this)">Demo</div>
           </div>
-          <div class="chat-items">
+          <div class="chat-items" id="chat-list-real" style="display:block;">
+            <div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:13px;">Tsis tau muaj lus. Tos txais lus tshiab...</div>
+          </div>
+          <div class="chat-items" id="chat-list-demo" style="display:none;">
             <div class="chat-item active" onclick="selectChat(0)">
               <div class="avatar">NA</div>
               <div class="chat-info">
@@ -2016,6 +2018,13 @@ function selectChat(idx) {
   if (headerAvEl && avatar) headerAvEl.src = avatar;
 }
 
+function switchChatTab(tab, el) {
+  document.querySelectorAll('.chat-list-tabs .chat-tab').forEach(function(t) { t.classList.remove('active'); });
+  if (el) el.classList.add('active');
+  document.getElementById('chat-list-real').style.display = tab === 'real' ? 'block' : 'none';
+  document.getElementById('chat-list-demo').style.display = tab === 'demo' ? 'block' : 'none';
+}
+
 function showFlowBuilder() {
   var area = document.getElementById('flow-builder-area');
   if (area) {
@@ -2764,6 +2773,146 @@ initFBUI();
 initDashboardCharts();
 loadAgentRules();
 loadAgentConfig();
+
+// ========== REAL-TIME CHAT (SSE) ==========
+var sseConnection = null;
+var realMessages = [];
+var chatContacts = {};
+
+function connectSSE() {
+  if (sseConnection) sseConnection.close();
+  sseConnection = new EventSource('/api/events');
+  sseConnection.addEventListener('message', function(e) {
+    try {
+      var msg = JSON.parse(e.data);
+      realMessages.push(msg);
+      updateChatSidebar(msg);
+      updateChatMessages(msg);
+    } catch {}
+  });
+  sseConnection.addEventListener('connected', function() {
+    console.log('[SSE] Connected');
+  });
+  sseConnection.onerror = function() {
+    console.log('[SSE] Error, reconnecting in 5s...');
+    setTimeout(connectSSE, 5000);
+  };
+}
+
+function loadRealMessages() {
+  fetch('/api/messages').then(function(r) { return r.json(); }).then(function(msgs) {
+    if (!Array.isArray(msgs)) return;
+    realMessages = msgs;
+    buildChatContacts(msgs);
+    renderChatSidebar();
+  }).catch(function() {});
+}
+
+function buildChatContacts(msgs) {
+  chatContacts = {};
+  msgs.forEach(function(m) {
+    var id = m.dir === 'in' ? m.from : m.to;
+    if (!id) return;
+    if (!chatContacts[id]) chatContacts[id] = { id: id, page: m.page, messages: [], lastTime: m.time, unread: 0 };
+    chatContacts[id].messages.push(m);
+    chatContacts[id].lastTime = m.time;
+    if (m.dir === 'in') chatContacts[id].unread++;
+  });
+}
+
+function renderChatSidebar() {
+  var list = document.getElementById('chat-list-real');
+  if (!list) return;
+  var sorted = Object.values(chatContacts).sort(function(a, b) { return new Date(b.lastTime) - new Date(a.lastTime); });
+  if (sorted.length === 0) { list.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-secondary);font-size:13px;">Tsis tau muaj lus. Tos txais lus tshiab...</div>'; return; }
+  list.innerHTML = sorted.slice(0, 30).map(function(c) {
+    var lastMsg = c.messages[c.messages.length - 1];
+    var preview = lastMsg ? (lastMsg.text || '').substring(0, 40) : '';
+    var initials = (c.id || '').substring(0, 2).toUpperCase();
+    var unreadBadge = c.unread > 0 ? '<div class="chat-unread">' + c.unread + '</div>' : '';
+    return '<div class="chat-item" onclick="openRealChat(\'' + c.id + '\')">'
+      + '<div class="avatar" style="background:rgba(108,92,231,0.15);color:#6C5CE7;">' + initials + '</div>'
+      + '<div class="chat-info"><div class="chat-name">ID: ' + c.id + '</div><div class="chat-preview">' + preview + '</div></div>'
+      + '<div class="chat-meta">' + unreadBadge + '</div></div>';
+  }).join('');
+}
+
+function updateChatSidebar(msg) {
+  var id = msg.dir === 'in' ? msg.from : msg.to;
+  if (!id) return;
+  if (!chatContacts[id]) chatContacts[id] = { id: id, page: msg.page, messages: [], lastTime: msg.time, unread: 0 };
+  chatContacts[id].messages.push(msg);
+  chatContacts[id].lastTime = msg.time;
+  if (msg.dir === 'in') chatContacts[id].unread++;
+  renderChatSidebar();
+}
+
+var currentChatId = null;
+
+function openRealChat(contactId) {
+  currentChatId = contactId;
+  var contact = chatContacts[contactId];
+  if (!contact) return;
+  contact.unread = 0;
+  renderChatSidebar();
+
+  var headerName = document.querySelector('.chat-header-name');
+  if (headerName) headerName.textContent = 'ID: ' + contactId;
+
+  var msgsEl = document.getElementById('chat-messages');
+  if (!msgsEl) return;
+  msgsEl.innerHTML = contact.messages.map(function(m) {
+    var cls = m.dir === 'in' ? 'incoming' : 'bot';
+    var tag = m.src ? '<div class="bot-tag">' + (m.src.startsWith('rule') ? '📋 Rule' : m.src === 'ai' ? '🤖 AI' : m.src === 'manual' ? '👤 Manual' : '🔄 Follow-up') + '</div>' : '';
+    var time = m.time ? new Date(m.time).toLocaleTimeString('vi', {hour:'2-digit',minute:'2-digit'}) : '';
+    return '<div class="msg ' + cls + '">' + tag + (m.text || '') + '<div class="msg-time">' + time + '</div></div>';
+  }).join('');
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+function updateChatMessages(msg) {
+  var id = msg.dir === 'in' ? msg.from : msg.to;
+  if (id !== currentChatId) return;
+  var msgsEl = document.getElementById('chat-messages');
+  if (!msgsEl) return;
+  var cls = msg.dir === 'in' ? 'incoming' : 'bot';
+  var tag = msg.src ? '<div class="bot-tag">' + (msg.src.startsWith('rule') ? '📋 Rule' : msg.src === 'ai' ? '🤖 AI' : msg.src === 'manual' ? '👤 Manual' : '🔄 Follow-up') + '</div>' : '';
+  var time = msg.time ? new Date(msg.time).toLocaleTimeString('vi', {hour:'2-digit',minute:'2-digit'}) : '';
+  var el = document.createElement('div');
+  el.className = 'msg ' + cls;
+  el.innerHTML = tag + (msg.text || '') + '<div class="msg-time">' + time + '</div>';
+  msgsEl.appendChild(el);
+  msgsEl.scrollTop = msgsEl.scrollHeight;
+}
+
+// Override sendMsg to send real messages via API
+var originalSendMsg = sendMsg;
+sendMsg = function() {
+  var input = document.getElementById('chat-input');
+  var text = input.value.trim();
+  if (!text || !currentChatId) { originalSendMsg(); return; }
+  var contact = chatContacts[currentChatId];
+  if (!contact || !contact.page) { originalSendMsg(); return; }
+  input.value = '';
+  fetch('/api/send', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ recipientId: currentChatId, pageId: contact.page, message: text })
+  }).then(function(r) { return r.json(); }).then(function(d) {
+    if (d.error) console.error('[SEND]', d.error);
+  }).catch(function(e) { console.error('[SEND]', e); });
+};
+
+// ========== LOGOUT ==========
+function logout() {
+  fetch('/api/logout', { method: 'POST' }).then(function() {
+    window.location.href = '/login';
+  });
+}
+
+// Connect SSE and load messages on page load
+connectSSE();
+loadRealMessages();
 </script>
 <script>
 if ('serviceWorker' in navigator) {
