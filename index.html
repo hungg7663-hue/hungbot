@@ -111,6 +111,19 @@ body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-
   position: absolute; top: 6px; right: 6px; width: 8px; height: 8px;
   background: var(--danger); border-radius: 50%; border: 2px solid #fff;
 }
+.lang-switch { position: relative; }
+.lang-menu {
+  display: none; position: absolute; top: 44px; right: 0; background: #fff;
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,.15); border: 1px solid var(--border);
+  overflow: hidden; z-index: 999; min-width: 160px;
+}
+.lang-menu.show { display: block; }
+.lang-option {
+  padding: 10px 16px; cursor: pointer; font-size: 14px; transition: background .15s;
+  display: flex; align-items: center; gap: 8px;
+}
+.lang-option:hover { background: var(--bg); }
+.lang-option.active { background: rgba(108,92,231,.08); color: var(--primary); font-weight: 600; }
 .search-box {
   display: flex; align-items: center; gap: 8px; background: var(--bg);
   border-radius: 20px; padding: 8px 16px; border: 1px solid var(--border);
@@ -594,6 +607,13 @@ textarea.form-input { min-height: 100px; resize: vertical; }
       <div class="search-box">
         <span>&#x1F50D;</span>
         <input type="text" placeholder="Tim kiem...">
+      </div>
+      <div class="lang-switch" id="langSwitch">
+        <button class="topbar-btn" onclick="toggleLangMenu(event)" title="Hloov lus / Doi ngon ngu">&#x1F310;</button>
+        <div class="lang-menu" id="langMenu">
+          <div class="lang-option" onclick="setLang('hmn')">&#x1F1ED;&#x1F1F2; Hmoob</div>
+          <div class="lang-option" onclick="setLang('vi')">&#x1F1FB;&#x1F1F3; Tiếng Việt</div>
+        </div>
       </div>
       <button class="topbar-btn">&#x1F514;<span class="notif-dot"></span></button>
       <button class="topbar-btn">&#x2753;</button>
@@ -2612,6 +2632,228 @@ loadAgentConfig();
 <script>
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.register('/sw.js');
+}
+</script>
+<script>
+// ========== i18n — Hmoob / Tieng Viet ==========
+var i18n = {
+  vi: {
+    'Menu chinh': 'Menu chinh',
+    'He thong': 'He thong',
+    'Dashboard': 'Dashboard',
+    'Live Chat': 'Live Chat',
+    'Automation': 'Automation',
+    'Broadcasts': 'Broadcasts',
+    'Contacts': 'Contacts',
+    'AI Agent': 'AI Agent',
+    'Analytics': 'Analytics',
+    'Growth Tools': 'Growth Tools',
+    'Settings': 'Settings',
+    'Tim kiem...': 'Tim kiem...',
+    'Tong hoi thoai': 'Tong hoi thoai',
+    'Doanh thu tu chat': 'Doanh thu tu chat',
+    'Hoi thoai theo thoi gian': 'Hoi thoai theo thoi gian',
+    '7 ngay gan nhat': '7 ngay gan nhat',
+    '7 ngay': '7 ngay',
+    '30 ngay': '30 ngay',
+    'Kenh tin nhan': 'Kenh tin nhan',
+    'Hoi thoai gan day': 'Hoi thoai gan day',
+    'Xem tat ca': 'Xem tat ca',
+    'Khach hang': 'Khach hang',
+    'Kenh': 'Kenh',
+    'Tin nhan cuoi': 'Tin nhan cuoi',
+    'Trang thai': 'Trang thai',
+    'Thoi gian': 'Thoi gian',
+    'Hoi thoai': 'Hoi thoai',
+    '+ Moi': '+ Moi',
+    'Tim khach hang...': 'Tim khach hang...',
+    'Chien dich thang nay': 'Chien dich thang nay',
+    'Tin da gui': 'Tin da gui',
+    'Ti le mo': 'Ti le mo',
+    'Ti le click': 'Ti le click',
+    'Gui': 'Gui',
+    'Mo': 'Mo',
+    'Click': 'Click',
+    'Doi tuong': 'Doi tuong',
+    'Tong contacts': 'Tong contacts',
+    'Subscribers': 'Subscribers',
+    'Leads': 'Leads',
+    'Customers': 'Customers',
+    'Tong hoi thoai': 'Tong hoi thoai',
+    'Avg Response Time': 'Avg Response Time',
+    'Customer Satisfaction': 'Customer Satisfaction',
+    'AI Resolution Rate': 'AI Resolution Rate',
+    'Luu': 'Luu',
+    'Them moi': 'Them moi',
+    'Xoa': 'Xoa',
+    'Sua': 'Sua',
+    'Huy': 'Huy',
+    'Dong': 'Dong',
+    'Dang nhap Facebook': 'Dang nhap Facebook',
+    'Ket noi': 'Ket noi',
+    'Ngat ket noi': 'Ngat ket noi',
+    'Trang da ket noi': 'Trang da ket noi',
+    'Chua co trang nao': 'Chua co trang nao',
+    'Bot dang hoat dong': 'Bot dang hoat dong',
+    'Bot da dung': 'Bot da dung'
+  },
+  hmn: {
+    'Menu chinh': 'Ntawv qhia tseem ceeb',
+    'He thong': 'Kev tswj',
+    'Dashboard': 'Nplooj tseem ceeb',
+    'Live Chat': 'Sib tham ncaj qha',
+    'Automation': 'Ua haujlwm auto',
+    'Broadcasts': 'Xa lus ntau',
+    'Contacts': 'Neeg sib cuag',
+    'AI Agent': 'AI Tus pab',
+    'Analytics': 'Kev tshuaj ntsuam',
+    'Growth Tools': 'Cuab yeej loj hlob',
+    'Settings': 'Kev teeb tsa',
+    'Tim kiem...': 'Nrhiav...',
+    'Tong hoi thoai': 'Tag nrho kev sib tham',
+    'Doanh thu tu chat': 'Nyiaj tau los',
+    'Hoi thoai theo thoi gian': 'Kev sib tham raws sij hawm',
+    '7 ngay gan nhat': '7 hnub dhau los',
+    '7 ngay': '7 hnub',
+    '30 ngay': '30 hnub',
+    'Kenh tin nhan': 'Txoj kev xa lus',
+    'Hoi thoai gan day': 'Kev sib tham tshiab',
+    'Xem tat ca': 'Saib tag nrho',
+    'Khach hang': 'Neeg yuav khoom',
+    'Kenh': 'Channel',
+    'Tin nhan cuoi': 'Lus kawg',
+    'Trang thai': 'Xwm txheej',
+    'Thoi gian': 'Sij hawm',
+    'Hoi thoai': 'Kev sib tham',
+    '+ Moi': '+ Tshiab',
+    'Tim khach hang...': 'Nrhiav neeg...',
+    'Chien dich thang nay': 'Kev ua lag luam hli no',
+    'Tin da gui': 'Lus twb xa lawm',
+    'Ti le mo': 'Tus nqi qhib',
+    'Ti le click': 'Tus nqi nias',
+    'Gui': 'Xa',
+    'Mo': 'Qhib',
+    'Click': 'Nias',
+    'Doi tuong': 'Neeg',
+    'Tong contacts': 'Tag nrho neeg',
+    'Subscribers': 'Cov rau npe',
+    'Leads': 'Cov xav paub',
+    'Customers': 'Cov yuav khoom',
+    'Tong hoi thoai': 'Tag nrho kev sib tham',
+    'Avg Response Time': 'Sij hawm teb nruab nrab',
+    'Customer Satisfaction': 'Kev txaus siab',
+    'AI Resolution Rate': 'AI Tus nqi daws',
+    'Luu': 'Khaws cia',
+    'Them moi': 'Ntxiv tshiab',
+    'Xoa': 'Rho tawm',
+    'Sua': 'Kho',
+    'Huy': 'Tshem',
+    'Dong': 'Kaw',
+    'Dang nhap Facebook': 'Nkag Facebook',
+    'Ket noi': 'Txuas',
+    'Ngat ket noi': 'Tshem txuas',
+    'Trang da ket noi': 'Nplooj twb txuas lawm',
+    'Chua co trang nao': 'Tsis tau muaj nplooj',
+    'Bot dang hoat dong': 'Bot tab tom ua haujlwm',
+    'Bot da dung': 'Bot twb nres lawm'
+  }
+};
+
+var currentLang = localStorage.getItem('hmongx_lang') || 'vi';
+var originalTexts = new Map();
+
+function toggleLangMenu(e) {
+  e.stopPropagation();
+  var menu = document.getElementById('langMenu');
+  menu.classList.toggle('show');
+  updateLangMenuActive();
+}
+
+function updateLangMenuActive() {
+  var opts = document.querySelectorAll('.lang-option');
+  opts.forEach(function(o) { o.classList.remove('active'); });
+  var idx = currentLang === 'hmn' ? 0 : 1;
+  if (opts[idx]) opts[idx].classList.add('active');
+}
+
+document.addEventListener('click', function() {
+  document.getElementById('langMenu').classList.remove('show');
+});
+
+function collectTextNodes(el, nodes) {
+  for (var i = 0; i < el.childNodes.length; i++) {
+    var n = el.childNodes[i];
+    if (n.nodeType === 3) {
+      var t = n.textContent.trim();
+      if (t.length > 0) nodes.push(n);
+    } else if (n.nodeType === 1 && n.tagName !== 'SCRIPT' && n.tagName !== 'STYLE' && n.tagName !== 'CANVAS') {
+      collectTextNodes(n, nodes);
+    }
+  }
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('hmongx_lang', lang);
+  applyLang();
+  document.getElementById('langMenu').classList.remove('show');
+}
+
+function applyLang() {
+  var dict = i18n[currentLang];
+  var reverseDict = {};
+  var otherLang = currentLang === 'hmn' ? 'vi' : 'hmn';
+  var otherDict = i18n[otherLang];
+  Object.keys(otherDict).forEach(function(key) {
+    reverseDict[otherDict[key]] = key;
+  });
+
+  var nodes = [];
+  collectTextNodes(document.body, nodes);
+  nodes.forEach(function(node) {
+    var t = node.textContent.trim();
+    if (!originalTexts.has(node)) {
+      originalTexts.set(node, t);
+    }
+    var origKey = originalTexts.get(node);
+    if (dict[origKey]) {
+      node.textContent = node.textContent.replace(t, dict[origKey]);
+    } else if (reverseDict[t]) {
+      var key = reverseDict[t];
+      originalTexts.set(node, key);
+      if (dict[key]) node.textContent = node.textContent.replace(t, dict[key]);
+    }
+  });
+
+  // Update placeholders
+  document.querySelectorAll('input[placeholder]').forEach(function(inp) {
+    var p = inp.placeholder;
+    if (!inp._origPlaceholder) inp._origPlaceholder = p;
+    var key = inp._origPlaceholder;
+    if (dict[key]) inp.placeholder = dict[key];
+    else {
+      var revKey = reverseDict[p];
+      if (revKey) { inp._origPlaceholder = revKey; if (dict[revKey]) inp.placeholder = dict[revKey]; }
+    }
+  });
+
+  // Update page title in topbar
+  var pt = document.getElementById('page-title');
+  if (pt) {
+    var ptText = pt.textContent;
+    if (dict[ptText]) pt.textContent = dict[ptText];
+    else {
+      var rk = reverseDict[ptText];
+      if (rk && dict[rk]) pt.textContent = dict[rk];
+    }
+  }
+
+  updateLangMenuActive();
+}
+
+// Apply saved language on load
+if (currentLang !== 'vi') {
+  setTimeout(function() { applyLang(); }, 100);
 }
 </script>
 </body>
