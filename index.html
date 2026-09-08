@@ -508,6 +508,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
 
 /* Mobile nav (hidden by default, shown via media query) */
 .mobile-nav { display: none; }
+.mobile-nav.nav-hidden { display: none !important; }
 .chat-back-btn { display: none !important; }
 
 /* Hamburger & mobile overlay */
@@ -547,14 +548,14 @@ textarea.form-input { min-height: 100px; resize: vertical; }
   .search-box { display: none; }
 
   /* Live Chat mobile — stacked views */
-  .chat-layout { flex-direction: column; height: calc(100vh - 52px); margin: -12px; }
+  .chat-layout { flex-direction: column; height: calc(100vh - 52px - 60px); margin: -12px; }
   .chat-list { width: 100%; min-width: unset; max-height: 100%; }
   .chat-list.chat-hidden { display: none; }
   .chat-main { display: none; }
-  .chat-main.chat-visible { display: flex; }
+  .chat-main.chat-visible { display: flex; height: calc(100vh - 52px); position: fixed; top: 52px; left: 0; right: 0; bottom: 0; z-index: 140; background: #F0F0F8; }
   .chat-main-header { padding: 10px 12px; }
   .chat-messages { padding: 12px; }
-  .chat-input-area { padding: 10px 12px; }
+  .chat-input-area { padding: 10px 12px; padding-bottom: calc(10px + env(safe-area-inset-bottom, 0px)); }
   .chat-sidebar { display: none !important; }
   .msg { max-width: 85%; }
   .chat-back-btn { display: inline-flex !important; }
@@ -582,7 +583,7 @@ textarea.form-input { min-height: 100px; resize: vertical; }
 
   /* Bottom nav bar */
   .mobile-nav {
-    display: flex !important; position: fixed; bottom: 0; left: 0; right: 0;
+    display: flex; position: fixed; bottom: 0; left: 0; right: 0;
     background: var(--bg-card); border-top: 1px solid var(--border);
     z-index: 150; height: 60px; align-items: center; justify-content: space-around;
     box-shadow: 0 -2px 12px rgba(0,0,0,0.06);
@@ -2105,6 +2106,7 @@ document.querySelectorAll('.chat-tab').forEach(tab => {
 
 const FB_API = 'https://graph.facebook.com/v21.0';
 const FB_SCOPES = 'pages_show_list,pages_messaging,pages_read_engagement,pages_manage_metadata';
+const FB_DEFAULT_APP_ID = '945920818561745';
 let fbAccessToken = localStorage.getItem('hungbot_fb_token') || null;
 let fbUserData = null;
 let fbPages = [];
@@ -2135,9 +2137,11 @@ function saveFBAppId() {
 
 function initFBUI() {
   var appId = localStorage.getItem('hungbot_fb_app_id');
-  if (appId) {
-    document.getElementById('fb-app-id-input').value = appId;
+  if (!appId) {
+    appId = FB_DEFAULT_APP_ID;
+    localStorage.setItem('hungbot_fb_app_id', appId);
   }
+  document.getElementById('fb-app-id-input').value = appId;
 
   handleFBRedirect();
 
@@ -2162,11 +2166,9 @@ function initFBUI() {
       if (hasPages) showConnectedPagesFromConfig(cfg.pageNames);
     } else if (hasPages) {
       showConnectedPagesFromConfig(cfg.pageNames);
-    } else if (appId || cfg.fbAppId) {
+    } else {
       document.getElementById('fb-appid-setup').style.display = 'none';
       document.getElementById('fb-connect-section').style.display = 'block';
-    } else {
-      document.getElementById('fb-appid-setup').style.display = 'block';
     }
   }).catch(function() {
     // Offline fallback
@@ -3133,6 +3135,8 @@ function chatGoBack() {
     chatList.classList.remove('chat-hidden');
     chatMain.classList.remove('chat-visible');
   }
+  var mNav = document.querySelector('.mobile-nav');
+  if (mNav) mNav.classList.remove('nav-hidden');
 }
 
 // Override chat item click to show chat main on mobile
@@ -3149,6 +3153,8 @@ document.addEventListener('click', function(e) {
       chatList.classList.add('chat-hidden');
       chatMain.classList.add('chat-visible');
     }
+    var mNav = document.querySelector('.mobile-nav');
+    if (mNav) mNav.classList.add('nav-hidden');
   }
 });
 
