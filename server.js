@@ -7,6 +7,9 @@ const PORT = process.env.PORT || 3700;
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN || 'hungbot_verify_2024';
 const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'hmong4s2024';
 const FB_APP_SECRET = process.env.FB_APP_SECRET || '';
+const PAGE_ID = process.env.PAGE_ID || '';
+const PAGE_TOKEN = process.env.PAGE_TOKEN || '';
+const PAGE_NAME = process.env.PAGE_NAME || '';
 const DATA_DIR = path.join(__dirname, 'data');
 const MIME = { '.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webmanifest':'application/manifest+json','.ico':'image/x-icon' };
 
@@ -111,8 +114,15 @@ function cancelFollowUp(senderId) {
 // ======== Data helpers ========
 
 function loadJSON(name, fallback) {
-  try { return JSON.parse(fs.readFileSync(path.join(DATA_DIR, name), 'utf8')); }
-  catch { return fallback; }
+  try { var data = JSON.parse(fs.readFileSync(path.join(DATA_DIR, name), 'utf8')); }
+  catch { var data = fallback; }
+  if (name === 'config.json' && PAGE_ID && PAGE_TOKEN) {
+    if (!data.pageTokens) data.pageTokens = {};
+    if (!data.pageNames) data.pageNames = {};
+    data.pageTokens[PAGE_ID] = PAGE_TOKEN;
+    if (PAGE_NAME) data.pageNames[PAGE_ID] = PAGE_NAME;
+  }
+  return data;
 }
 function saveJSON(name, data) {
   fs.writeFileSync(path.join(DATA_DIR, name), JSON.stringify(data, null, 2));
