@@ -1,7 +1,7 @@
 {
   "name": "hungbot",
   "version": "1.0.0",
-  "description": "HungBot - AI Chatbot Marketing Platform",
+  "description": "HMONGX ChatBot - AI Chatbot Marketing",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"

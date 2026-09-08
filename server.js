@@ -380,4 +380,4 @@ http.createServer(async function(req, res) {
     res.writeHead(200, { 'Content-Type': MIME[ext] || 'text/plain' });
     res.end(data);
   });
-}).listen(PORT, function() { console.log('HungBot running at http://localhost:' + PORT); });
+}).listen(PORT, function() { console.log('HMONGX ChatBot running at http://localhost:' + PORT); });
