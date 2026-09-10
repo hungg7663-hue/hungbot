@@ -10,6 +10,10 @@ const FB_APP_SECRET = process.env.FB_APP_SECRET || '';
 const PAGE_ID = process.env.PAGE_ID || '';
 const PAGE_TOKEN = process.env.PAGE_TOKEN || '';
 const PAGE_NAME = process.env.PAGE_NAME || '';
+var ENV_PAGE_TOKENS = {};
+var ENV_PAGE_NAMES = {};
+try { ENV_PAGE_TOKENS = JSON.parse(process.env.PAGE_TOKENS_JSON || '{}'); } catch {}
+try { ENV_PAGE_NAMES = JSON.parse(process.env.PAGE_NAMES_JSON || '{}'); } catch {}
 const DATA_DIR = path.join(__dirname, 'data');
 const MIME = { '.html':'text/html','.css':'text/css','.js':'text/javascript','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml','.webmanifest':'application/manifest+json','.ico':'image/x-icon' };
 
@@ -116,11 +120,15 @@ function cancelFollowUp(senderId) {
 function loadJSON(name, fallback) {
   try { var data = JSON.parse(fs.readFileSync(path.join(DATA_DIR, name), 'utf8')); }
   catch { var data = fallback; }
-  if (name === 'config.json' && PAGE_ID && PAGE_TOKEN) {
+  if (name === 'config.json') {
     if (!data.pageTokens) data.pageTokens = {};
     if (!data.pageNames) data.pageNames = {};
-    data.pageTokens[PAGE_ID] = PAGE_TOKEN;
-    if (PAGE_NAME) data.pageNames[PAGE_ID] = PAGE_NAME;
+    if (PAGE_ID && PAGE_TOKEN) {
+      data.pageTokens[PAGE_ID] = PAGE_TOKEN;
+      if (PAGE_NAME) data.pageNames[PAGE_ID] = PAGE_NAME;
+    }
+    Object.assign(data.pageTokens, ENV_PAGE_TOKENS);
+    Object.assign(data.pageNames, ENV_PAGE_NAMES);
   }
   return data;
 }
